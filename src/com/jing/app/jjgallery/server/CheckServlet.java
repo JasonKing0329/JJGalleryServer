@@ -78,62 +78,80 @@ public class CheckServlet extends HttpServlet {
 	private Object checkNewRecords(String type) {
 		GdbCheckNewFileBean bean = new GdbCheckNewFileBean();
 		File folder = new File(Configuration.getRecordPath(getServletContext()));
-		File files[] = folder.listFiles();
-		if (files.length > 0) {
-			List<DownloadItem> records = new ArrayList<DownloadItem>();
-			for (File file:files) {
-				if (file.isDirectory()) {
-					continue;
-				}
-				DownloadItem item = new DownloadItem();
-				String filename = file.getName();
-				try {
-					filename = new String(filename.getBytes("ISO-8859-1"), "utf-8");
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-				}
-				item.setName(filename);
-				item.setKey(filename);
-				item.setSize(file.length());
-				item.setFlag(type);
-				records.add(item);
-			}
-			if (records.size() > 0) {
-				bean.setRecordExisted(true);
-			}
-			bean.setRecordItems(records);
+		List<DownloadItem> list = getDownloadItems(folder, type, false);
+		if (list.size() > 0) {
+			bean.setRecordExisted(true);
 		}
+		bean.setRecordItems(list);
 		return bean;
 	}
 
 	private Object checkNewStars(String type) {
 		GdbCheckNewFileBean bean = new GdbCheckNewFileBean();
 		File folder = new File(Configuration.getStarPath(getServletContext()));
-		File files[] = folder.listFiles();
-		if (files.length > 0) {
-			List<DownloadItem> stars = new ArrayList<DownloadItem>();
-			for (File file:files) {
-				if (file.isDirectory()) {
-					continue;
-				}
-				DownloadItem item = new DownloadItem();
-				String filename = file.getName();
-				try {
-					filename = new String(filename.getBytes("ISO-8859-1"), "utf-8");
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-				}
-				item.setName(filename);
-				item.setKey(filename);
-				item.setSize(file.length());
-				item.setFlag(type);
-				stars.add(item);
-			}
-			if (stars.size() > 0) {
-				bean.setStarExisted(true);
-			}
-			bean.setStarItems(stars);
+		List<DownloadItem> list = getDownloadItems(folder, type, false);
+		if (list.size() > 0) {
+			bean.setStarExisted(true);
 		}
+		bean.setStarItems(list);
 		return bean;
+	}
+
+	/**
+	 * 在star与record下载中，item的key充当parent目录
+	 * @param folder
+	 * @param type
+	 * @param isSub
+	 * @return
+	 */
+	private List<DownloadItem> getDownloadItems(File folder, String type, boolean isSub) {
+		File files[] = folder.listFiles();
+		List<DownloadItem> list = new ArrayList<>();
+		if (files.length > 0) {
+			for (File file:files) {
+				//
+				if (file.isDirectory()) {
+					if (isAvailableFolder(file)) {
+						list.addAll(getDownloadItems(file, type, true));
+					}
+					else {
+						continue;
+					}
+				}
+				else {
+					DownloadItem item = new DownloadItem();
+					String filename = file.getName();
+					try {
+						filename = new String(filename.getBytes("ISO-8859-1"), "utf-8");
+					} catch (UnsupportedEncodingException e) {
+						e.printStackTrace();
+					}
+					// 二级文件，key是其父目录
+					if (isSub) {
+						item.setKey(folder.getName());
+					}
+					// 一级文件，key是去掉后缀的文件名
+					else {
+						item.setKey(null);
+					}
+					item.setName(filename);
+					item.setSize(file.length());
+					item.setFlag(type);
+					list.add(item);
+				}
+			}
+		}
+		return list;
+	}
+
+	private boolean isAvailableFolder(File folder) {
+		String folderName = folder.getName();
+		if ("added".equals(folderName)) {
+			return false;
+		}
+		else if ("Other".equals(folderName)) {
+			return false;
+		}
+		return true;
 	}
 }

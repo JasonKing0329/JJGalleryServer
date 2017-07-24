@@ -70,17 +70,30 @@ public class DownloadServlet extends HttpServlet {
 			file = new File(path);
 		}
 		else if (type.equals(Command.TYPE_RECORD)) {
+			String key = req.getParameter("key");
 			String filename = req.getParameter("name");
 			filename = new String(filename.getBytes("ISO-8859-1"), "utf-8");
-			String path = Configuration.getRecordPath(getServletContext()) + "/" + filename;
+			String root = Configuration.getRecordPath(getServletContext());
+			String path = root + "/" + filename;
 			file = new File(path);
+			if (!file.exists()) {
+				path = root + "/" + key + "/" + filename;
+				file = new File(path);
+			}
 		}
 		else if (type.equals(Command.TYPE_STAR)) {
+			String key = req.getParameter("key");
 			String filename = req.getParameter("name");
 			filename = new String(filename.getBytes("ISO-8859-1"), "utf-8");
-			String path = Configuration.getStarPath(getServletContext()) + "/" + filename;
+			String root = Configuration.getStarPath(getServletContext());
+			String path = root + "/" + filename;
 			file = new File(path);
+			if (!file.exists()) {
+				path = root + "/" + key + "/" + filename;
+				file = new File(path);
+			}
 		}
+		System.out.println("[DownloadServlet]" + file.getPath());
 		return file;
 	}
 
