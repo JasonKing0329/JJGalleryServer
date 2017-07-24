@@ -1,0 +1,139 @@
+package com.jing.app.jjgallery.server;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.google.gson.Gson;
+import com.jing.app.jjgallery.bean.http.AppCheckBean;
+import com.jing.app.jjgallery.bean.http.DownloadItem;
+import com.jing.app.jjgallery.bean.http.GdbCheckNewFileBean;
+import com.jing.app.jjgallery.conf.Command;
+import com.jing.app.jjgallery.conf.Configuration;
+
+public class CheckServlet extends HttpServlet {
+
+	@Override
+	public void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		String type = req.getParameter("type");
+		if (type != null) {
+			Object bean = null;
+			if (type.equals(Command.TYPE_APP)) {
+				bean = checkAppUpdate(req.getParameter("version"));
+			}
+			else if (type.equals(Command.TYPE_GDB_DATABASE)) {
+				bean = checkGdbDatabase(req.getParameter("version"));
+			}
+			else if (type.equals(Command.TYPE_STAR)) {
+				bean = checkNewStars(type);
+			}
+			else if (type.equals(Command.TYPE_RECORD)) {
+				bean = checkNewRecords(type);
+			}
+			resp.getWriter().print(new Gson().toJson(bean));
+		}
+		else {
+			resp.getWriter().print("parameter is null");
+		}
+	}
+
+	private Object checkAppUpdate(String version) {
+		AppCheckBean bean = new AppCheckBean();
+		String localVersion = Configuration.getAppVersion(getServletContext());
+		bean.setAppVersion(localVersion);
+		String path = Configuration.getAppPath(getServletContext());
+		File file = new File(path);
+		bean.setAppName(file.getName());
+		bean.setAppSize(file.length());
+		
+		if (localVersion.compareTo(version) > 0) {
+			bean.setAppUpdate(true);
+		}
+		return bean;
+	}
+
+	private Object checkGdbDatabase(String version) {
+		AppCheckBean bean = new AppCheckBean();
+		String localVersion = Configuration.getGdbDatabaseVersion(getServletContext());
+		bean.setGdbDabaseVersion(localVersion);
+		String path = Configuration.getGdbDatabasePath(getServletContext());
+		File file = new File(path);
+		bean.setGdbDabaseName(file.getName());
+		bean.setGdbDabaseSize(file.length());
+		
+		if (localVersion.compareTo(version) > 0) {
+			bean.setGdbDatabaseUpdate(true);
+		}
+		return bean;
+	}
+
+	private Object checkNewRecords(String type) {
+		GdbCheckNewFileBean bean = new GdbCheckNewFileBean();
+		File folder = new File(Configuration.getRecordPath(getServletContext()));
+		File files[] = folder.listFiles();
+		if (files.length > 0) {
+			List<DownloadItem> records = new ArrayList<DownloadItem>();
+			for (File file:files) {
+				if (file.isDirectory()) {
+					continue;
+				}
+				DownloadItem item = new DownloadItem();
+				String filename = file.getName();
+				try {
+					filename = new String(filename.getBytes("ISO-8859-1"), "utf-8");
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}
+				item.setName(filename);
+				item.setKey(filename);
+				item.setSize(file.length());
+				item.setFlag(type);
+				records.add(item);
+			}
+			if (records.size() > 0) {
+				bean.setRecordExisted(true);
+			}
+			bean.setRecordItems(records);
+		}
+		return bean;
+	}
+
+	private Object checkNewStars(String type) {
+		GdbCheckNewFileBean bean = new GdbCheckNewFileBean();
+		File folder = new File(Configuration.getStarPath(getServletContext()));
+		File files[] = folder.listFiles();
+		if (files.length > 0) {
+			List<DownloadItem> stars = new ArrayList<DownloadItem>();
+			for (File file:files) {
+				if (file.isDirectory()) {
+					continue;
+				}
+				DownloadItem item = new DownloadItem();
+				String filename = file.getName();
+				try {
+					filename = new String(filename.getBytes("ISO-8859-1"), "utf-8");
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}
+				item.setName(filename);
+				item.setKey(filename);
+				item.setSize(file.length());
+				item.setFlag(type);
+				stars.add(item);
+			}
+			if (stars.size() > 0) {
+				bean.setStarExisted(true);
+			}
+			bean.setStarItems(stars);
+		}
+		return bean;
+	}
+}
