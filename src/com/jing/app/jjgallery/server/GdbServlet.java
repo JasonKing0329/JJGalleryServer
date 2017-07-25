@@ -13,10 +13,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
+import com.jing.app.jjgallery.bean.http.DownloadItem;
 import com.jing.app.jjgallery.bean.http.GdbMoveResponse;
 import com.jing.app.jjgallery.bean.http.GdbRequestMoveBean;
 import com.jing.app.jjgallery.conf.Command;
 import com.jing.app.jjgallery.conf.Configuration;
+import com.jing.app.jjgallery.conf.Filters;
 import com.jing.app.jjgallery.url.Urls;
 
 public class GdbServlet extends HttpServlet {
@@ -40,7 +42,7 @@ public class GdbServlet extends HttpServlet {
 	private void doRequestMove(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
 		GdbMoveResponse responseBean = new GdbMoveResponse();
-		
+
 		String acceptjson = parseJson(req);
 		Gson gson = new Gson();
 		try {
@@ -48,19 +50,21 @@ public class GdbServlet extends HttpServlet {
 
 			if (bean.getDownloadList() != null) {
 				for (int i = 0; i < bean.getDownloadList().size(); i ++) {
-					moveFile(bean.getType(), getFilePath(bean.getType(), bean.getDownloadList().get(i).getName()));
+					DownloadItem item = bean.getDownloadList().get(i);
+					moveFile(bean.getType(), getFilePath(bean.getType(), item.getName(), item.getKey()), item.getKey());
 				}
 			}
+			removeEmptyFolders(bean.getType());
 			responseBean.setSuccess(true);
 		} catch (Exception e) {
 			e.printStackTrace();
 			responseBean.setSuccess(false);
 		}
-		
+
 		resp.getWriter().print(gson.toJson(responseBean));
 	}
 
-	private String parseJson(HttpServletRequest req) {
+    private String parseJson(HttpServletRequest req) {
 		String acceptjson = "";
 		try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(
@@ -79,30 +83,67 @@ public class GdbServlet extends HttpServlet {
 		return acceptjson;
 	}
 
-	private String getFilePath(String type, String filename) throws UnsupportedEncodingException {
+	private String getFilePath(String type, String filename, String parent) throws UnsupportedEncodingException {
 		String path = null;
 		if (type.equals(Command.TYPE_RECORD)) {
 			filename = new String(filename.getBytes("ISO-8859-1"), "utf-8");
-			path = Configuration.getRecordPath(getServletContext()) + "/" + filename;
+			if (parent == null) {
+				path = Configuration.getRecordPath(getServletContext()) + "/" + filename;
+			}
+			else {
+				path = Configuration.getRecordPath(getServletContext()) + "/" + parent + "/" + filename;
+			}
 		}
     	else if (type.equals(Command.TYPE_STAR)) {
     	    filename = new String(filename.getBytes("ISO-8859-1"), "utf-8");
-    	    path = Configuration.getStarPath(getServletContext()) + "/" + filename;
+			if (parent == null) {
+				path = Configuration.getStarPath(getServletContext()) + "/" + filename;
+			}
+			else {
+				path = Configuration.getStarPath(getServletContext()) + "/" + parent + "/" + filename;
+			}
 		}
 		return path;
 	}
 
-	private void moveFile(String type, String path) {
+	private void moveFile(String type, String path, String parent) {
 		File src = new File(path);
 		String targetFolder = Configuration.getStarPath(getServletContext());
 		if (type.equals(Command.TYPE_RECORD)) {
 			targetFolder = Configuration.getRecordPath(getServletContext());
 		}
-		targetFolder = targetFolder + "/added/";
+		targetFolder = targetFolder + "/" + Filters.FOLDER_ADDED + "/";
+		if (parent != null) {
+			targetFolder = targetFolder + parent + "/";
+			File folder = new File(targetFolder);
+			if (!folder.exists()) {
+				folder.mkdir();
+			}
+		}
 		File target = new File(targetFolder + src.getName());
 		if (target.exists()) {
 			target = new File(targetFolder + "[repeat][" + System.currentTimeMillis() + "]" + src.getName());
 		}
+		System.out.println("[GdbServlet]moveFile src:" + src.getPath() + ", target:" + target.getPath());
 		src.renameTo(target);
 	}
+
+    /**
+     * remove empty folders after moved all successfully
+     */
+    private void removeEmptyFolders(String type) {
+        String targetFolder = Configuration.getStarPath(getServletContext());
+        if (type.equals(Command.TYPE_RECORD)) {
+            targetFolder = Configuration.getRecordPath(getServletContext());
+        }
+        File root = new File(targetFolder);
+        File files[] = root.listFiles();
+        for (File file:files) {
+            if (file.isDirectory() && Filters.isAvailableFolder(file.getName())) {
+                System.out.println("[GdbServlet]removeEmptyFolders " + file.getPath());
+                file.delete();
+            }
+        }
+    }
+
 }

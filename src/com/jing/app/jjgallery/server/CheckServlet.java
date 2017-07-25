@@ -17,6 +17,7 @@ import com.jing.app.jjgallery.bean.http.DownloadItem;
 import com.jing.app.jjgallery.bean.http.GdbCheckNewFileBean;
 import com.jing.app.jjgallery.conf.Command;
 import com.jing.app.jjgallery.conf.Configuration;
+import com.jing.app.jjgallery.conf.Filters;
 
 public class CheckServlet extends HttpServlet {
 
@@ -111,7 +112,7 @@ public class CheckServlet extends HttpServlet {
 			for (File file:files) {
 				//
 				if (file.isDirectory()) {
-					if (isAvailableFolder(file)) {
+					if (Filters.isAvailableFolder(file.getName())) {
 						list.addAll(getDownloadItems(file, type, true));
 					}
 					else {
@@ -144,14 +145,4 @@ public class CheckServlet extends HttpServlet {
 		return list;
 	}
 
-	private boolean isAvailableFolder(File folder) {
-		String folderName = folder.getName();
-		if ("added".equals(folderName)) {
-			return false;
-		}
-		else if ("Other".equals(folderName)) {
-			return false;
-		}
-		return true;
-	}
 }
