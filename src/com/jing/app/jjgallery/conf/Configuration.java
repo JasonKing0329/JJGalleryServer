@@ -107,4 +107,32 @@ public class Configuration {
 		return path;
 	}
 
+	public static String getVideoScenePath(ServletContext servletContext) {
+		return getProperty(servletContext, "video_scene_path");
+	}
+
+	public static String getVideoStarPathE(ServletContext servletContext) {
+		return getProperty(servletContext, "video_star_path_e");
+	}
+
+	public static String getVideoStarPathD(ServletContext servletContext) {
+		return getProperty(servletContext, "video_star_path_d");
+	}
+
+	public static String getVideoStarPathDIndex(ServletContext servletContext) {
+		return getProperty(servletContext, "video_star_path_d_index");
+	}
+
+	private static String getProperty(ServletContext servletContext, String key) {
+		String path = null;
+		Properties properties = new Properties();
+		try {
+			properties.load(new FileInputStream(servletContext.getRealPath("/") + CONF_NAME));
+			path = properties.getProperty(key);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return path;
+	}
+
 }

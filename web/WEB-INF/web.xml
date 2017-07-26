@@ -54,4 +54,14 @@
         <url-pattern>/requestMove</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <description>Folder service</description>
+        <servlet-name>FolderServlet</servlet-name>
+        <servlet-class>com.jing.app.jjgallery.server.FolderServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>FolderServlet</servlet-name>
+        <url-pattern>/surfFolder</url-pattern>
+    </servlet-mapping>
+
 </web-app>

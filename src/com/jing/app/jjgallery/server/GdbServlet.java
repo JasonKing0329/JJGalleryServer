@@ -1,86 +1,43 @@
 package com.jing.app.jjgallery.server;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
-import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.gson.Gson;
 import com.jing.app.jjgallery.bean.http.DownloadItem;
 import com.jing.app.jjgallery.bean.http.GdbMoveResponse;
 import com.jing.app.jjgallery.bean.http.GdbRequestMoveBean;
 import com.jing.app.jjgallery.conf.Command;
 import com.jing.app.jjgallery.conf.Configuration;
 import com.jing.app.jjgallery.conf.Filters;
-import com.jing.app.jjgallery.url.Urls;
 
-public class GdbServlet extends HttpServlet {
+public class GdbServlet extends BaseJsonServlet<GdbRequestMoveBean, GdbMoveResponse> {
 
 	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-
+	protected Class<GdbRequestMoveBean> getRequestClass() {
+		return GdbRequestMoveBean.class;
 	}
 
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		String url = req.getRequestURI();
-		System.out.println(req.getRequestURL());
-		if (url.endsWith(Urls.REQUEST_MOVE)) {
-			doRequestMove(req, resp);
+	protected void onReceiveRequest(GdbRequestMoveBean requestBean, HttpServletResponse resp) throws IOException {
+		doRequestMove(requestBean, resp);
+	}
+
+	private void doRequestMove(GdbRequestMoveBean requestBean, HttpServletResponse resp) throws IOException {
+
+		if (requestBean.getDownloadList() != null) {
+			for (int i = 0; i < requestBean.getDownloadList().size(); i ++) {
+				DownloadItem item = requestBean.getDownloadList().get(i);
+				moveFile(requestBean.getType(), getFilePath(requestBean.getType(), item.getName(), item.getKey()), item.getKey());
+			}
 		}
-	}
-
-	private void doRequestMove(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
+		removeEmptyFolders(requestBean.getType());
 		GdbMoveResponse responseBean = new GdbMoveResponse();
+		responseBean.setSuccess(true);
 
-		String acceptjson = parseJson(req);
-		Gson gson = new Gson();
-		try {
-			GdbRequestMoveBean bean = gson.fromJson(acceptjson, GdbRequestMoveBean.class);
-
-			if (bean.getDownloadList() != null) {
-				for (int i = 0; i < bean.getDownloadList().size(); i ++) {
-					DownloadItem item = bean.getDownloadList().get(i);
-					moveFile(bean.getType(), getFilePath(bean.getType(), item.getName(), item.getKey()), item.getKey());
-				}
-			}
-			removeEmptyFolders(bean.getType());
-			responseBean.setSuccess(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-			responseBean.setSuccess(false);
-		}
-
-		resp.getWriter().print(gson.toJson(responseBean));
-	}
-
-    private String parseJson(HttpServletRequest req) {
-		String acceptjson = "";
-		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(
-					(ServletInputStream) req.getInputStream(), "utf-8"));
-			StringBuffer sb = new StringBuffer("");
-			String temp;
-			while ((temp = br.readLine()) != null) {
-				sb.append(temp);
-			}
-			br.close();
-			acceptjson = sb.toString();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.print("parseJson: " + acceptjson);
-		return acceptjson;
+		sendResponse(resp, responseBean);
 	}
 
 	private String getFilePath(String type, String filename, String parent) throws UnsupportedEncodingException {
