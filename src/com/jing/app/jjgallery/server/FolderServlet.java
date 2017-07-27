@@ -1,10 +1,10 @@
 package com.jing.app.jjgallery.server;
 
-import com.jing.app.jjgallery.bean.http.FileBean;
-import com.jing.app.jjgallery.bean.http.FolderRequest;
-import com.jing.app.jjgallery.bean.http.FolderResponse;
+import com.jing.app.jjgallery.http.bean.data.FileBean;
+import com.jing.app.jjgallery.http.bean.request.FolderRequest;
+import com.jing.app.jjgallery.http.bean.response.FolderResponse;
 import com.jing.app.jjgallery.conf.Configuration;
-import com.jing.app.jjgallery.conf.HttpConstants;
+import com.jing.app.jjgallery.http.HttpConstants;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -34,39 +34,18 @@ public class FolderServlet extends BaseJsonServlet<FolderRequest, FolderResponse
         if (HttpConstants.FOLDER_TYPE_CONTENT.equals(requestBean.getType())) {
             getContentList(fileList);
         }
-        else if (HttpConstants.FOLDER_TYPE_ALL.equals(requestBean.getType())) {
-            File file = new File(Configuration.getVideoScenePath(getServletContext()));
-            addToFileList(file, fileList);
-            file = new File(Configuration.getVideoStarPathE(getServletContext()));
-            addToFileList(file, fileList);
-            file = new File(Configuration.getVideoStarPathD(getServletContext()));
-            addToFileList(file, fileList);
-        }
-        else if (HttpConstants.FOLDER_TYPE_SCENE.equals(requestBean.getType())) {
-            String path = Configuration.getVideoScenePath(getServletContext());
-            if (requestBean.getFolder() != null) {
-                path = path + "/" + requestBean.getFolder();
-            }
-            File file = new File(path);
-            addToFileList(file, fileList);
-        }
-        else if (HttpConstants.FOLDER_TYPE_STAR.equals(requestBean.getType())) {
-            String path;
-            if (requestBean.getFolder() != null) {
-                char index = requestBean.getFolder().toLowerCase().charAt(0);
-                if (String.valueOf(index).compareTo(Configuration.getVideoStarPathDIndex(getServletContext())) >= 0) {
-                    path = Configuration.getVideoStarPathD(getServletContext()) + "/" + requestBean.getFolder();
-                }
-                else {
-                    path = Configuration.getVideoStarPathE(getServletContext()) + "/" + requestBean.getFolder();
-                }
-                File file = new File(path);
+        else if (HttpConstants.FOLDER_TYPE_FOLDER.equals(requestBean.getType())) {
+            if (HttpConstants.FOLDER_TYPE_ALL.equals(requestBean.getFolder())) {
+                File file = new File(Configuration.getVideoScenePath(getServletContext()));
+                addToFileList(file, fileList);
+                file = new File(Configuration.getVideoStarPathE(getServletContext()));
+                addToFileList(file, fileList);
+                file = new File(Configuration.getVideoStarPathD(getServletContext()));
                 addToFileList(file, fileList);
             }
             else {
-                File file = new File(Configuration.getVideoStarPathE(getServletContext()));
-                addToFileList(file, fileList);
-                file = new File(Configuration.getVideoStarPathD(getServletContext()));
+                String path = requestBean.getFolder();
+                File file = new File(path);
                 addToFileList(file, fileList);
             }
         }
@@ -113,10 +92,16 @@ public class FolderServlet extends BaseJsonServlet<FolderRequest, FolderResponse
             }
             else {
                 String fileName = f.getName();
-                String name = fileName.substring(0, fileName.lastIndexOf("."));
-                String extra = fileName.substring(fileName.lastIndexOf(".") + 1);
-                bean.setName(name);
-                bean.setExtra(extra);
+                if (fileName.contains(".")) {
+                    String name = fileName.substring(0, fileName.lastIndexOf("."));
+                    String extra = fileName.substring(fileName.lastIndexOf(".") + 1);
+                    bean.setName(name);
+                    bean.setExtra(extra);
+                }
+                else {
+                    bean.setName(fileName);
+                    bean.setExtra("");
+                }
             }
             fileList.add(bean);
         }

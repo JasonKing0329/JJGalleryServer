@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
-import com.jing.app.jjgallery.bean.http.GdbRespBean;
+import com.jing.app.jjgallery.http.bean.response.GdbRespBean;
 
 public class ConnectionServlet extends HttpServlet {
 

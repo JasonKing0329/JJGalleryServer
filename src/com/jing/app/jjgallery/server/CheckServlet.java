@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
-import com.jing.app.jjgallery.bean.http.AppCheckBean;
-import com.jing.app.jjgallery.bean.http.DownloadItem;
-import com.jing.app.jjgallery.bean.http.GdbCheckNewFileBean;
+import com.jing.app.jjgallery.http.bean.response.AppCheckBean;
+import com.jing.app.jjgallery.http.bean.data.DownloadItem;
+import com.jing.app.jjgallery.http.bean.request.GdbCheckNewFileBean;
 import com.jing.app.jjgallery.conf.Command;
 import com.jing.app.jjgallery.conf.Configuration;
 import com.jing.app.jjgallery.conf.Filters;

@@ -83,7 +83,7 @@ public abstract class BaseJsonServlet<T, M> extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.print("parseJson: " + acceptjson);
+        System.out.println("parseJson: " + acceptjson);
         return acceptjson;
     }
 

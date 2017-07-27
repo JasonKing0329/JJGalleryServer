@@ -6,9 +6,9 @@ import java.io.UnsupportedEncodingException;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.jing.app.jjgallery.bean.http.DownloadItem;
-import com.jing.app.jjgallery.bean.http.GdbMoveResponse;
-import com.jing.app.jjgallery.bean.http.GdbRequestMoveBean;
+import com.jing.app.jjgallery.http.bean.data.DownloadItem;
+import com.jing.app.jjgallery.http.bean.response.GdbMoveResponse;
+import com.jing.app.jjgallery.http.bean.request.GdbRequestMoveBean;
 import com.jing.app.jjgallery.conf.Command;
 import com.jing.app.jjgallery.conf.Configuration;
 import com.jing.app.jjgallery.conf.Filters;
