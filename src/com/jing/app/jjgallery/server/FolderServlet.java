@@ -33,8 +33,7 @@ public class FolderServlet extends BaseJsonServlet<FolderRequest, FolderResponse
         responseBean.setFileList(fileList);
         if (HttpConstants.FOLDER_TYPE_CONTENT.equals(requestBean.getType())) {
             getContentList(fileList);
-        }
-        else if (HttpConstants.FOLDER_TYPE_FOLDER.equals(requestBean.getType())) {
+        } else if (HttpConstants.FOLDER_TYPE_FOLDER.equals(requestBean.getType())) {
             if (HttpConstants.FOLDER_TYPE_ALL.equals(requestBean.getFolder())) {
                 File file = new File(Configuration.getVideoScenePath(getServletContext()));
                 addToFileList(file, fileList);
@@ -42,8 +41,7 @@ public class FolderServlet extends BaseJsonServlet<FolderRequest, FolderResponse
                 addToFileList(file, fileList);
                 file = new File(Configuration.getVideoStarPathD(getServletContext()));
                 addToFileList(file, fileList);
-            }
-            else {
+            } else {
                 String path = requestBean.getFolder();
                 File file = new File(path);
                 addToFileList(file, fileList);
@@ -64,6 +62,8 @@ public class FolderServlet extends BaseJsonServlet<FolderRequest, FolderResponse
         bean.setFolder(true);
         bean.setName(file.getName());
         bean.setPath(file.getPath());
+        bean.setLastModifyTime(file.lastModified());
+        bean.setSize(file.length());
         fileList.add(bean);
 
         file = new File(Configuration.getVideoStarPathE(getServletContext()));
@@ -71,6 +71,8 @@ public class FolderServlet extends BaseJsonServlet<FolderRequest, FolderResponse
         bean.setFolder(true);
         bean.setName(file.getName());
         bean.setPath(file.getPath());
+        bean.setLastModifyTime(file.lastModified());
+        bean.setSize(file.length());
         fileList.add(bean);
 
         file = new File(Configuration.getVideoStarPathD(getServletContext()));
@@ -78,32 +80,46 @@ public class FolderServlet extends BaseJsonServlet<FolderRequest, FolderResponse
         bean.setFolder(true);
         bean.setName(file.getName());
         bean.setPath(file.getPath());
+        bean.setLastModifyTime(file.lastModified());
+        bean.setSize(file.length());
         fileList.add(bean);
     }
 
     private void addToFileList(File folder, List<FileBean> fileList) {
         File[] files = folder.listFiles();
-        for (File f:files) {
+        for (File f : files) {
             FileBean bean = new FileBean();
             bean.setFolder(f.isDirectory());
             bean.setPath(f.getPath());
             if (f.isDirectory()) {
                 bean.setName(f.getName());
-            }
-            else {
+                bean.setSize(getFolderSize(f));
+            } else {
                 String fileName = f.getName();
                 if (fileName.contains(".")) {
                     String name = fileName.substring(0, fileName.lastIndexOf("."));
                     String extra = fileName.substring(fileName.lastIndexOf(".") + 1);
                     bean.setName(name);
                     bean.setExtra(extra);
-                }
-                else {
+                } else {
                     bean.setName(fileName);
                     bean.setExtra("");
                 }
+                bean.setSize(f.length());
             }
+            bean.setLastModifyTime(f.lastModified());
             fileList.add(bean);
         }
+    }
+
+    private long getFolderSize(File file) {
+        if (file.isFile())
+            return file.length();
+        final File[] children = file.listFiles();
+        long total = 0;
+        if (children != null)
+            for (File child : children)
+                total += getFolderSize(child);
+        return total;
     }
 }
