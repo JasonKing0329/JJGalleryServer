@@ -63,7 +63,7 @@ public class FolderServlet extends BaseJsonServlet<FolderRequest, FolderResponse
         bean.setName(file.getName());
         bean.setPath(file.getPath());
         bean.setLastModifyTime(file.lastModified());
-        bean.setSize(file.length());
+        bean.setSize(getFolderSize(file));
         fileList.add(bean);
 
         file = new File(Configuration.getVideoStarPathE(getServletContext()));
@@ -72,7 +72,7 @@ public class FolderServlet extends BaseJsonServlet<FolderRequest, FolderResponse
         bean.setName(file.getName());
         bean.setPath(file.getPath());
         bean.setLastModifyTime(file.lastModified());
-        bean.setSize(file.length());
+        bean.setSize(getFolderSize(file));
         fileList.add(bean);
 
         file = new File(Configuration.getVideoStarPathD(getServletContext()));
@@ -81,7 +81,7 @@ public class FolderServlet extends BaseJsonServlet<FolderRequest, FolderResponse
         bean.setName(file.getName());
         bean.setPath(file.getPath());
         bean.setLastModifyTime(file.lastModified());
-        bean.setSize(file.length());
+        bean.setSize(getFolderSize(file));
         fileList.add(bean);
     }
 
