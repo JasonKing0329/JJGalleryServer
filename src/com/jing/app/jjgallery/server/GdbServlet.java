@@ -37,6 +37,15 @@ public class GdbServlet extends BaseJsonServlet<GdbRequestMoveBean, GdbMoveRespo
 		GdbMoveResponse responseBean = new GdbMoveResponse();
 		responseBean.setSuccess(true);
 
+		String tempPath = Configuration.getTempPath(getServletContext());
+		File file = new File(tempPath);
+		if (file.exists()) {
+			File[] files = file.listFiles();
+			for (File f:files) {
+				f.delete();
+			}
+		}
+
 		sendResponse(resp, responseBean);
 	}
 
@@ -48,7 +57,8 @@ public class GdbServlet extends BaseJsonServlet<GdbRequestMoveBean, GdbMoveRespo
 				path = Configuration.getRecordPath(getServletContext()) + "/" + filename;
 			}
 			else {
-				path = Configuration.getRecordPath(getServletContext()) + "/" + parent + "/" + filename;
+				parent = Configuration.getRecordPath(getServletContext()) + "/" + parent;
+				path = parent + "/" + filename;
 			}
 		}
     	else if (type.equals(Command.TYPE_STAR)) {
@@ -57,7 +67,8 @@ public class GdbServlet extends BaseJsonServlet<GdbRequestMoveBean, GdbMoveRespo
 				path = Configuration.getStarPath(getServletContext()) + "/" + filename;
 			}
 			else {
-				path = Configuration.getStarPath(getServletContext()) + "/" + parent + "/" + filename;
+				parent = Configuration.getStarPath(getServletContext()) + "/" + parent;
+				path = parent + "/" + filename;
 			}
 		}
 		return path;
@@ -74,7 +85,7 @@ public class GdbServlet extends BaseJsonServlet<GdbRequestMoveBean, GdbMoveRespo
 			targetFolder = targetFolder + parent + "/";
 			File folder = new File(targetFolder);
 			if (!folder.exists()) {
-				folder.mkdir();
+				folder.mkdirs();
 			}
 		}
 		File target = new File(targetFolder + src.getName());
@@ -94,13 +105,23 @@ public class GdbServlet extends BaseJsonServlet<GdbRequestMoveBean, GdbMoveRespo
             targetFolder = Configuration.getRecordPath(getServletContext());
         }
         File root = new File(targetFolder);
-        File files[] = root.listFiles();
-        for (File file:files) {
-            if (file.isDirectory() && Filters.isAvailableFolder(file.getName())) {
-                System.out.println("[GdbServlet]removeEmptyFolders " + file.getPath());
-                file.delete();
-            }
-        }
+		deleteDir(root);
     }
 
+	private static boolean deleteDir(File dir) {
+		if (dir.isDirectory() && Filters.isAvailableFolder(dir.getName())) {
+			String[] children = dir.list();
+			for (int i=0; i<children.length; i++) {
+				boolean success = deleteDir(new File(dir, children[i]));
+				if (!success) {
+					return false;
+				}
+			}
+		}
+		// 目录此时为空，可以删除
+		if (Filters.isAvailableFolder(dir.getName())) {
+			dir.delete();
+		}
+		return true;
+	}
 }

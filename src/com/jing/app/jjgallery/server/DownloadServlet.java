@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.jing.app.jjgallery.conf.Command;
 import com.jing.app.jjgallery.conf.Configuration;
+import com.jing.app.jjgallery.util.ImgCompress;
+import com.jing.app.jjgallery.util.MD5Util;
 
 public class DownloadServlet extends HttpServlet {
 
@@ -24,6 +25,9 @@ public class DownloadServlet extends HttpServlet {
 		if (type != null) {
 			File file = getFilePath(type, req);
 			if (file != null && file.exists()) {
+
+				System.out.println("doGet " + file.getPath());
+
 				resp.setContentType(this.getServletContext().getMimeType(file.getName()));
 				resp.addHeader("Content-Disposition", "attachment;filename=" + file.getName());
 				resp.setContentLength((int)file.length());
@@ -47,6 +51,8 @@ public class DownloadServlet extends HttpServlet {
 				}
 			}
 			else {
+				System.out.println("doGet " + "Error: file doesn't exist");
+
 				resp.getWriter().append("Error: file doesn't exist");
 			}
 		}
@@ -59,7 +65,7 @@ public class DownloadServlet extends HttpServlet {
 //		}
 	}
 
-	private File getFilePath(String type, HttpServletRequest req) throws UnsupportedEncodingException {
+	private File getFilePath(String type, HttpServletRequest req) throws IOException {
 		File file = null;
 		if (type.equals(Command.TYPE_APP)) {
 			String path = Configuration.getAppPath(getServletContext());
@@ -72,29 +78,59 @@ public class DownloadServlet extends HttpServlet {
 		else if (type.equals(Command.TYPE_RECORD)) {
 			String key = req.getParameter("key");
 			String filename = req.getParameter("name");
-			filename = new String(filename.getBytes("ISO-8859-1"), "utf-8");
 			String root = Configuration.getRecordPath(getServletContext());
-			String path = root + "/" + filename;
-			file = new File(path);
-			if (!file.exists()) {
-				path = root + "/" + key + "/" + filename;
-				file = new File(path);
-			}
+			return getImagePath(key, filename, root);
 		}
 		else if (type.equals(Command.TYPE_STAR)) {
 			String key = req.getParameter("key");
 			String filename = req.getParameter("name");
-			filename = new String(filename.getBytes("ISO-8859-1"), "utf-8");
 			String root = Configuration.getStarPath(getServletContext());
-			String path = root + "/" + filename;
-			file = new File(path);
-			if (!file.exists()) {
-				path = root + "/" + key + "/" + filename;
-				file = new File(path);
-			}
+			return getImagePath(key, filename, root);
 		}
 		System.out.println("[DownloadServlet]" + file.getPath());
 		return file;
+	}
+
+	private File getImagePath(String key, String filename, String root) throws IOException {
+		filename = new String(filename.getBytes("ISO-8859-1"), "utf-8");
+
+		// 先从压缩缓存目录里获取
+		String md5 = MD5Util.get16MD5Capital(key + "/" + filename);
+		String tempPath = Configuration.getTempPath(getServletContext());
+		String targetPath = tempPath + "/" + md5 + ".png";
+		File resultFile = new File(targetPath);
+		if (resultFile.exists()) {
+			return resultFile;
+		}
+
+		// 没有压缩缓存过按照新文件处理
+		String path = root + "/" + filename;
+		File file = new File(path);
+		if (!file.exists()) {
+			path = root + "/" + key + "/" + filename;
+			file = new File(path);
+		}
+		return compressImageFile(file, targetPath);
+	}
+
+	/**
+	 * 压缩图片到targetPath
+	 * @param file
+	 * @param targetPath
+	 * @throws IOException
+	 */
+	private File compressImageFile(File file, String targetPath) throws IOException {
+		File compressedFile = file;
+		if (file != null && file.exists()) {
+			// 压缩图片
+			new ImgCompress()
+					.source(file.getPath())
+					.setTargetPath(targetPath)
+					.resizeFix(1920, 1920)
+					.asFile();
+			compressedFile = new File(targetPath);
+		}
+		return compressedFile;
 	}
 
 }

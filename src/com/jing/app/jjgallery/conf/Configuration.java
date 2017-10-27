@@ -59,6 +59,18 @@ public class Configuration {
 		return appVersion;
 	}
 
+	public static String getTempPath(ServletContext servletContext) {
+		String path = null;
+		Properties properties = new Properties();
+		try {
+			properties.load(new FileInputStream(servletContext.getRealPath("/") + CONF_NAME));
+			path = properties.getProperty("temp_catch_path");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return path;
+	}
+
 	public static String getAppPath(ServletContext servletContext) {
 		String path = null;
 		Properties properties = new Properties();
