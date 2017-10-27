@@ -39,7 +39,9 @@ public class CheckServlet extends HttpServlet {
 			else if (type.equals(Command.TYPE_RECORD)) {
 				bean = checkNewRecords(type);
 			}
-			resp.getWriter().print(new Gson().toJson(bean));
+			String json = new Gson().toJson(bean);
+			System.out.println(json);
+			resp.getWriter().print(json);
 		}
 		else {
 			resp.getWriter().print("parameter is null");
@@ -79,7 +81,7 @@ public class CheckServlet extends HttpServlet {
 	private Object checkNewRecords(String type) {
 		GdbCheckNewFileBean bean = new GdbCheckNewFileBean();
 		File folder = new File(Configuration.getRecordPath(getServletContext()));
-		List<DownloadItem> list = getDownloadItems(folder, type, false);
+		List<DownloadItem> list = getDownloadItems(folder, type, null);
 		if (list.size() > 0) {
 			bean.setRecordExisted(true);
 		}
@@ -90,7 +92,7 @@ public class CheckServlet extends HttpServlet {
 	private Object checkNewStars(String type) {
 		GdbCheckNewFileBean bean = new GdbCheckNewFileBean();
 		File folder = new File(Configuration.getStarPath(getServletContext()));
-		List<DownloadItem> list = getDownloadItems(folder, type, false);
+		List<DownloadItem> list = getDownloadItems(folder, type, null);
 		if (list.size() > 0) {
 			bean.setStarExisted(true);
 		}
@@ -102,10 +104,9 @@ public class CheckServlet extends HttpServlet {
 	 * 在star与record下载中，item的key充当parent目录
 	 * @param folder
 	 * @param type
-	 * @param isSub
 	 * @return
 	 */
-	private List<DownloadItem> getDownloadItems(File folder, String type, boolean isSub) {
+	private List<DownloadItem> getDownloadItems(File folder, String type, String key) {
 		File files[] = folder.listFiles();
 		List<DownloadItem> list = new ArrayList<>();
 		if (files.length > 0) {
@@ -113,7 +114,14 @@ public class CheckServlet extends HttpServlet {
 				//
 				if (file.isDirectory()) {
 					if (Filters.isAvailableFolder(file.getName())) {
-						list.addAll(getDownloadItems(file, type, true));
+						String subKey;
+						if (key == null) {
+							subKey = file.getName();
+						}
+						else {
+							subKey = key.concat("/").concat(file.getName());
+						}
+						list.addAll(getDownloadItems(file, type, subKey));
 					}
 					else {
 						continue;
@@ -127,14 +135,8 @@ public class CheckServlet extends HttpServlet {
 					} catch (UnsupportedEncodingException e) {
 						e.printStackTrace();
 					}
-					// 二级文件，key是其父目录
-					if (isSub) {
-						item.setKey(folder.getName());
-					}
-					// 一级文件，key是去掉后缀的文件名
-					else {
-						item.setKey(null);
-					}
+
+					item.setKey(key);
 					item.setName(filename);
 					item.setSize(file.length());
 					item.setFlag(type);
