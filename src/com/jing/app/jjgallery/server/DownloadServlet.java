@@ -121,12 +121,13 @@ public class DownloadServlet extends HttpServlet {
 	 */
 	private File compressImageFile(File file, String targetPath) throws IOException {
 		File compressedFile = file;
-		if (file != null && file.exists()) {
+		// gif压缩无效，不压缩
+		if (file != null && file.exists() && !file.getName().endsWith(".gif")) {
 			// 压缩图片
 			new ImgCompress()
 					.source(file.getPath())
 					.setTargetPath(targetPath)
-					.resizeFix(1920, 1920)
+					.resizeFix(1280, 1280)
 					.asFile();
 			compressedFile = new File(targetPath);
 		}
