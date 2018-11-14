@@ -84,4 +84,14 @@
         <url-pattern>/getStarRatings</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <description>PathServlet</description>
+        <servlet-name>PathServlet</servlet-name>
+        <servlet-class>com.jing.app.jjgallery.server.PathServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PathServlet</servlet-name>
+        <url-pattern>/videoPath</url-pattern>
+    </servlet-mapping>
+
 </web-app>
