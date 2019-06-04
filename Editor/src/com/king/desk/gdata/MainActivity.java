@@ -627,13 +627,13 @@ public class MainActivity extends BaseActivity {
 					}
 				});
 
-		if (new File(Conf.WEB_DB).exists()) {
+		if (new File(Conf.FILE_DB).exists()) {
 			// 每次启动后自动备份到history目录下
 			viewModel.backupHistoryDatabase();
 			viewModel.loadTableData(viewModel.getSelectedSource(0));
 		}
 		else {
-			showConfirm(Conf.WEB_DB + " 不存在");
+			showConfirm(Conf.FILE_DB + " 不存在");
 		}
 	}
 

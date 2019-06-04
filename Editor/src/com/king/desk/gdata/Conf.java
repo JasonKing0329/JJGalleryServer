@@ -2,7 +2,7 @@ package com.king.desk.gdata;
 
 public class Conf {
 
-	public static final String DIR_APP = "E:/web/workspace/GDataEditor";
+	public static final String DIR_APP = "E:/king/Devolopment/intelliJ_project/JJGalleryServer/Editor";
 	public static final String FILE_DB = DIR_APP + "/gdata.db";
 	public static final String IMG_DIR = DIR_APP + "/res/drawable";
 	public static final String STAR_IMG_DIR = "D:/king/game/other/img/gdb/star/added";

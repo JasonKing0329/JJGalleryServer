@@ -21,7 +21,7 @@ public class SqlInstance {
 	}
 	
 	public void connect() {
-		connect(Conf.WEB_DB);
+		connect(Conf.FILE_DB);
 	}
 
 	public void connect(String db) {

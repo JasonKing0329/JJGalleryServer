@@ -188,7 +188,8 @@ public class DataTableViewModel {
 				loadTableData(mTableType);
 				messageObserver.setValue("保存成功");
 				// 保存成功后自动备份数据库
-				backupDatabase();
+//				backupDatabase();
+				backupHistoryDatabase();
 			}
 
 			@Override
@@ -405,7 +406,7 @@ public class DataTableViewModel {
 					throws Exception {
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 				String target = Conf.HISTORY_DIR + "/gdata_" + sdf.format(new Date(System.currentTimeMillis())) + ".db";
-				FileUtil.copyFile(Conf.WEB_DB, target);
+				FileUtil.copyFile(Conf.FILE_DB, target);
 			}
 		}).subscribe(new Observer<Boolean>() {
 

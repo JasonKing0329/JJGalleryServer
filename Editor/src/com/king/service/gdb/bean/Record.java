@@ -20,6 +20,10 @@ public class Record {
     private int scoreCum;
     private int scoreSpecial;
     private int scoreBareback;
+    private int scoreBody;
+    private int scoreAss;
+
+    private int scoreCock;
     private int deprecated;
     private String specialDesc;
     private long lastModifyTime;
@@ -161,5 +165,29 @@ public class Record {
 	public void setRecordDetailId(long recordDetailId) {
 		this.recordDetailId = recordDetailId;
 	}
+
+    public int getScoreBody() {
+        return scoreBody;
+    }
+
+    public void setScoreBody(int scoreBody) {
+        this.scoreBody = scoreBody;
+    }
+
+    public int getScoreAss() {
+        return scoreAss;
+    }
+
+    public void setScoreAss(int scoreAss) {
+        this.scoreAss = scoreAss;
+    }
+
+    public int getScoreCock() {
+        return scoreCock;
+    }
+
+    public void setScoreCock(int scoreCock) {
+        this.scoreCock = scoreCock;
+    }
 
 }

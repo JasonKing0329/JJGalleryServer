@@ -224,14 +224,17 @@ public class SqlDao {
 		record.setScoreFeel(set.getInt(7));
 		record.setScoreStar(set.getInt(8));
 		record.setScorePassion(set.getInt(9));
-		record.setScoreCum(set.getInt(10));
-		record.setScoreSpecial(set.getInt(11));
-		record.setScoreBareback(set.getInt(12));
-		record.setDeprecated(set.getInt(13));
-		record.setSpecialDesc(set.getString(14));
-		record.setLastModifyTime(set.getLong(15));
-		record.setType(set.getInt(16));
-		record.setRecordDetailId(set.getLong(17));
+		record.setScoreBody(set.getInt(10));
+		record.setScoreCock(set.getInt(11));
+		record.setScoreAss(set.getInt(12));
+		record.setScoreCum(set.getInt(13));
+		record.setScoreSpecial(set.getInt(14));
+		record.setScoreBareback(set.getInt(15));
+		record.setDeprecated(set.getInt(16));
+		record.setSpecialDesc(set.getString(17));
+		record.setLastModifyTime(set.getLong(18));
+		record.setType(set.getInt(19));
+		record.setRecordDetailId(set.getLong(20));
 		return record;
 	}
 
@@ -502,8 +505,8 @@ public class SqlDao {
 	public void updateRecord(Record record) {
 		StringBuffer buffer = new StringBuffer("UPDATE ");
 		buffer.append(TABLE_RECORD)
-				.append(" SET scene=?,directory=?,name=?,HD_LEVEL=?,score=?,SCORE_FEEL=?")
-				.append(",SCORE_STAR=?,SCORE_PASSION=?,SCORE_CUM=?,SCORE_SPECIAL=?,SCORE_BAREBACK=?,deprecated=?")
+				.append(" SET scene=?,directory=?,name=?,HD_LEVEL=?,score=?,SCORE_FEEL=?,SCORE_STAR=?,SCORE_PASSION=?")
+				.append(",SCORE_BODY=?,SCORE_COCK=?,SCORE_ASS=?,SCORE_CUM=?,SCORE_SPECIAL=?,SCORE_BAREBACK=?,deprecated=?")
 				.append(",SPECIAL_DESC=?,LAST_MODIFY_TIME=?,TYPE=?,RECORD_DETAIL_ID=?")
 				.append(" WHERE _id=?");
 		String sql = buffer.toString();
@@ -628,6 +631,9 @@ public class SqlDao {
 			stmt.setInt(index++, record.getScoreFeel());
 			stmt.setInt(index++, record.getScoreStar());
 			stmt.setInt(index++, record.getScorePassion());
+			stmt.setInt(index++, record.getScoreBody());
+			stmt.setInt(index++, record.getScoreCock());
+			stmt.setInt(index++, record.getScoreAss());
 			stmt.setInt(index++, record.getScoreCum());
 			stmt.setInt(index++, record.getScoreSpecial());
 			stmt.setInt(index++, record.getScoreBareback());
