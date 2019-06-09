@@ -10,5 +10,7 @@ public class DimenssionResource {
 	public int toolbar_item_margin = 20;
 	public int table_top = 75;
 	public int main_frame_height = ScreenUtil.getScreenHeight() - 50;
+	public int deprecated_def_width = 500;
+	public int deprecated_def_height = 430;
 	
 }

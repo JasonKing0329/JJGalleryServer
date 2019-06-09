@@ -85,6 +85,29 @@ public class DataTableViewModel {
 		return Constants.source[position];
 	}
 
+	/**
+	 * 一次性调用，修正目录里面的“\”符号
+	 */
+	public void fixDirectory() {
+		Observable.create(new ObservableOnSubscribe<Boolean>() {
+			@Override
+			public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
+				SqlInstance.get().getDao().fixDirectory();
+				e.onNext(true);
+			}
+		}).subscribe(new Observer<Boolean>() {
+			@Override
+			public void onNext(Boolean value) {
+
+			}
+
+			@Override
+			public void onError(Throwable e) {
+				e.printStackTrace();
+			}
+		});
+	}
+
 	public void loadTableData(final String type) {
 		mTableType = type;
 		loadingObserver.setValue(true);
@@ -299,6 +322,14 @@ public class DataTableViewModel {
 		}
 	}
 
+	public void updateDirectory(int row, String text) {
+		TableItem item = mCurrentList.get(row);
+		setFileChanged(true);
+		item.setBasicChanged(true);
+		item.getBean().setDirectory(text);
+		tableUpdateObserver.setValue(true);
+	}
+
 	public String getVersion() {
 		return tableModel.getVersion();
 	}
@@ -429,5 +460,4 @@ public class DataTableViewModel {
 		Collections.sort(mCurrentList, new TableComparator(column, mDesc));
 		filterDataObserver.setValue(mCurrentList);
 	}
-
 }

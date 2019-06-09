@@ -47,6 +47,23 @@ public class Preference {
 		updateCreatorProperties();
 	}
 
+	public static Rectangle getDeprecatedSelectorFrame() {
+		Rectangle rectangle = new Rectangle();
+		rectangle.x = getInt("rec_deprecated_x", 0);
+		rectangle.y = getInt("rec_deprecated_y", 0);
+		rectangle.width = getInt("rec_deprecated_width", R.dimen.deprecated_def_width);
+		rectangle.height = getInt("rec_deprecated_height", R.dimen.deprecated_def_height);
+		return rectangle;
+	}
+
+	public static void setDeprecatedSelectorFrame(Rectangle bounds) {
+		properties.setProperty("rec_deprecated_x", String.valueOf(bounds.x));
+		properties.setProperty("rec_deprecated_y", String.valueOf(bounds.y));
+		properties.setProperty("rec_deprecated_width", String.valueOf(bounds.width));
+		properties.setProperty("rec_deprecated_height", String.valueOf(bounds.height));
+		updateCreatorProperties();
+	}
+
 	public static Rectangle getRecordStarFrame() {
 		Rectangle rectangle = new Rectangle();
 		rectangle.x = getInt("rec_record_star_x", 100);

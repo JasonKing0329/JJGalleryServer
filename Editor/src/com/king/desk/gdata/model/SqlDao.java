@@ -164,7 +164,7 @@ public class SqlDao {
 		if (type != -1) {
 			sql = sql + " WHERE type = " + type;
 		}
-		sql = sql + " ORDER BY deprecated, directory, name";
+		sql = sql + " ORDER BY deprecated, directory COLLATE NOCASE, name COLLATE NOCASE";// 大小写混排
 		Statement statement = null;
 		List<Record> list = new ArrayList<>();
 		try {
@@ -1011,4 +1011,30 @@ public class SqlDao {
 		return false;
 	}
 
+	/**
+	 * 一次性的
+	 */
+	public void fixDirectory() {
+		String sql = "SELECT * FROM " + TABLE_RECORD + " WHERE directory like '%\\%'";
+		Statement statement = null;
+		try {
+			statement = connection.createStatement();
+			ResultSet set = statement.executeQuery(sql);
+			while (set.next()) {
+				Record record = parseRecord(set);
+				record.setDirectory(record.getDirectory().replaceAll("\\\\", "/"));
+				updateRecord(record);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (statement != null) {
+					statement.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

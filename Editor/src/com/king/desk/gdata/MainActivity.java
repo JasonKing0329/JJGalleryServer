@@ -739,7 +739,18 @@ public class MainActivity extends BaseActivity {
             }
         });
         popupMenu.add(delMenItem);
-        popupMenu.show(table, event.getX(), event.getY());
+
+		JMenuItem dirMenItem = new JMenuItem();
+		dirMenItem.setText("修改目录");
+		dirMenItem.addActionListener(evt -> {
+            DirectorySelector selector = new DirectorySelector();
+            selector.setOnResultSetListener(text -> {
+            	viewModel.updateDirectory(row, text);
+            });
+            selector.showDialog();
+        });
+		popupMenu.add(dirMenItem);
+		popupMenu.show(table, event.getX(), event.getY());
     }
 
 	protected void showReadDatePopup(final int row, MouseEvent event) {
