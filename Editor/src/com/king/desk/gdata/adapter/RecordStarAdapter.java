@@ -93,10 +93,17 @@ public class RecordStarAdapter extends AbstractTableModel {
 	@Override
 	public boolean isCellEditable(int row, int col) {
 		RecordStar star = valueList.get(row);
-		// 新添加的才能修改
+		// 新添加
 		if (star.getId() == null) {
 			// type,id,starId不能修改
 			if (col > COL_STAR_ID) {
+				return true;
+			}
+		}
+		// 已添加
+		else {
+			// type,id,starId,name不能修改
+			if (col > COL_STAR_NAME) {
 				return true;
 			}
 		}

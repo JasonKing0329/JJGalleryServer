@@ -238,7 +238,6 @@ public class RecordStarActivity extends BaseActivity {
 				
 				@Override
 				public void onDataChanged(String value, int row, int col) {
-					// 能编辑的都是新加的，可以直接设置value
 					RecordStar rs = mTableItem.getStars().get(row);
 					switch (col) {
 					// 0是type, 1是id, 2是starId
@@ -248,11 +247,15 @@ public class RecordStarActivity extends BaseActivity {
 					case RecordStarAdapter.COL_SCORE:// score
 						try {
 							rs.setScore(Integer.parseInt(value));
+							viewModel.setFileChanged(true);
+							mTableItem.setStarChanged(true);
 						} catch (Exception e) {}
 						break;
 					case RecordStarAdapter.COL_SCORE_C:// scoreC
 						try {
 							rs.setScoreC(Integer.parseInt(value));
+							viewModel.setFileChanged(true);
+							mTableItem.setStarChanged(true);
 						} catch (Exception e) {}
 						break;
 

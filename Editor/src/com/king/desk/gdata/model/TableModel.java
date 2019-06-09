@@ -435,19 +435,21 @@ public class TableModel {
             }
             // 内存中最后存在的，由于界面只支持新增和删除，如果关系中有新增的star要关联上starId
             for (RecordStar rs : item.getStars()) {
-                // updateRecordStar中会先删除之前所有存在的记录，所以这里也当做新增
-                if (rs.getId() != null) {
-                    rs.setId(null);
+                Star star;
+                if (rs.getId() == null) {
+                    star = getStar(rs.getStar().getName());
+                    rs.setStar(star);
+                    rs.setRecordId(item.getBean().getId());
+                    // 当前内存中没有找到star，属于新增，插入star到数据库
+                    if (star.getId() == null) {
+                        SqlInstance.get().getDao().insertStar(star);
+                        star.setId(++starId);
+                    }
+                    rs.setStarId(star.getId());
                 }
-                Star star = getStar(rs.getStar().getName());
-                rs.setStar(star);
-                rs.setRecordId(item.getBean().getId());
-                // 当前内存中没有找到star，属于新增，插入star到数据库
-                if (star.getId() == null) {
-                    SqlInstance.get().getDao().insertStar(star);
-                    star.setId(++starId);
+                else {
+                    star = rs.getStar();
                 }
-                rs.setStarId(star.getId());
                 mToUpdateStarMap.put(star.getName(), star);
             }
             SqlInstance.get().getDao().updateRecordStar(item.getStars(), item.getBean().getId());
@@ -520,7 +522,7 @@ public class TableModel {
     /**
      * 获取文件最近修改时间
      *
-     * @param record
+     * @param item
      */
     public long readRecordModifyTime(TableItem item) {
         long time = 0;
