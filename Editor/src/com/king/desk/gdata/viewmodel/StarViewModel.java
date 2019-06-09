@@ -82,7 +82,14 @@ public class StarViewModel {
 				List<Star> list = SqlInstance.get().getDao().queryAllStars("LOWER(name)");
 				char lastChar = ' ';
 				for (int i = 0; i < list.size(); i++) {
-					char index = list.get(i).getName().toUpperCase().charAt(0);
+					String name = list.get(i).getName();
+					char index;
+					if (name == null || name.length() == 0) {
+						index = ' ';
+					}
+					else {
+						index = name.toUpperCase().charAt(0);
+					}
 					if (index != lastChar) {
 						indexMap.put(index, i);
 						lastChar = index;
