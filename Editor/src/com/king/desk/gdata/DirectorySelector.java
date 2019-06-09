@@ -125,27 +125,10 @@ public class DirectorySelector extends JDialog {
                 onResultChanged();
             }
         });
-        dirList = getTextList();
+        dirList = Constants.getDirectoryList();
         TextAdapter adapter = new TextAdapter();
         adapter.setList(dirList);
         listText.setModel(adapter);
-    }
-
-    private List<String> getTextList() {
-        List<String> list = new ArrayList<>();
-        list.add("H:/root/G/Actors");
-        list.add("H:/root/G/Scenes");
-        list.add("H:/root/G/3");
-        list.add("H:/root/G/Long");
-        list.add("H:/root/G/multi");
-        list.add("D:/king/game/other/scene");
-        list.add("D:/king/game/other/star");
-        list.add("E:/TDDOWNLOAD/Other");
-        list.add("F:/myparadise/latestShow/other/star");
-        list.add("F:/myparadise/latestShow/other/three-way");
-        list.add("F:/myparadise/latestShow/other/together");
-        list.add("F:/myparadise/latestShow/other/multi-way");
-        return list;
     }
 
     private void onResultChanged() {

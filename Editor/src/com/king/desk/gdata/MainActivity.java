@@ -15,6 +15,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.Box;
@@ -463,7 +464,26 @@ public class MainActivity extends BaseActivity {
 		searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.X_AXIS));
 
 		searchPanel.add(Box.createHorizontalStrut(R.dimen.padding_hor));
-		
+
+		searchPanel.add(new JLabel("过滤目录"));
+
+		searchPanel.add(Box.createHorizontalStrut(R.dimen.padding_hor));
+
+		JComboBox comboBox=new JComboBox();
+		List<String> list = Constants.getDirectoryList();
+		list.add(0, Constants.DIR_ALL);
+		for (String item:list) {
+			comboBox.addItem(item);
+		}
+		comboBox.addActionListener(e -> {
+			JComboBox box = (JComboBox) e.getSource();
+			String dir = box.getSelectedItem().toString();
+			viewModel.filterDirectory(dir);
+		});
+		searchPanel.add(comboBox);
+
+		searchPanel.add(Box.createHorizontalStrut(R.dimen.toolbar_item_margin));
+
 		JLabel label = new JLabel("搜索文件名或Star");
 		searchPanel.add(label);
 
@@ -497,11 +517,10 @@ public class MainActivity extends BaseActivity {
 			}
 		};
 		textSearchField.getDocument().addDocumentListener(mTextWatcher);
-		
 		searchPanel.add(textSearchField);
 
 		searchPanel.add(Box.createHorizontalStrut(R.dimen.toolbar_item_margin));
-		
+
 		final JCheckBox cbModify = new JCheckBox("只显示待更新数据");
 		cbModify.addItemListener(new ItemListener() {
 			

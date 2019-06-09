@@ -242,8 +242,7 @@ public class DataTableViewModel {
 	}
 
 	private void deleteNewRecord(int row) {
-		mCurrentList.remove(row);
-		// 如果当前是处于过滤列表中，还要在原列表中删除
+		// 如果当前是处于过滤列表中，先在原列表中删除
 		if (mCurrentList != tableDataObserver.getValue()) {
 			for (int i = 0; i < tableDataObserver.getValue().size(); i++) {
 				if (tableDataObserver.getValue().get(i).getIndexInTotalList() == mCurrentList.get(row).getIndexInTotalList()) {
@@ -252,6 +251,8 @@ public class DataTableViewModel {
 				}
 			}
 		}
+		// 最后从过滤列表中删除
+		mCurrentList.remove(row);
 	}
 
 	public void setFileChanged(boolean changed) {
@@ -397,6 +398,23 @@ public class DataTableViewModel {
 		}
 		else {
 			mCurrentList = tableDataObserver.getValue();
+		}
+		filterDataObserver.setValue(mCurrentList);
+	}
+
+	public void filterDirectory(String dir) {
+		if (Constants.DIR_ALL.equals(dir)) {
+			mCurrentList = tableDataObserver.getValue();
+		}
+		else {
+			List<TableItem> list = new ArrayList<>();
+			for (TableItem item : tableDataObserver.getValue()) {
+				String directory = item.getBean().getDirectory();
+				if (directory != null && directory.startsWith(dir)) {
+					list.add(item);
+				}
+			}
+			mCurrentList = list;
 		}
 		filterDataObserver.setValue(mCurrentList);
 	}

@@ -1,5 +1,8 @@
 package com.king.desk.gdata;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Constants {
 
 	public static final String[] source = new String[] {
@@ -24,4 +27,24 @@ public class Constants {
 		}
 		return column;
 	}
+
+	public static final String DIR_ALL = "All";
+
+	public static List<String> getDirectoryList() {
+		List<String> list = new ArrayList<>();
+		list.add("H:/root/G/Actors");
+		list.add("H:/root/G/Scenes");
+		list.add("H:/root/G/3");
+		list.add("H:/root/G/Long");
+		list.add("H:/root/G/multi");
+		list.add("D:/king/game/other/scene");
+		list.add("D:/king/game/other/star");
+		list.add("E:/TDDOWNLOAD/Other");
+		list.add("F:/myparadise/latestShow/other/star");
+		list.add("F:/myparadise/latestShow/other/three-way");
+		list.add("F:/myparadise/latestShow/other/together");
+		list.add("F:/myparadise/latestShow/other/multi-way");
+		return list;
+	}
+
 }
