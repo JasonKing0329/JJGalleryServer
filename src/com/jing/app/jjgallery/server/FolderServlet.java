@@ -1,10 +1,11 @@
 package com.jing.app.jjgallery.server;
 
+import com.jing.app.jjgallery.conf.Constants;
 import com.jing.app.jjgallery.http.bean.data.FileBean;
 import com.jing.app.jjgallery.http.bean.request.FolderRequest;
 import com.jing.app.jjgallery.http.bean.response.FolderResponse;
-import com.jing.app.jjgallery.conf.Configuration;
 import com.jing.app.jjgallery.http.HttpConstants;
+import com.jing.app.jjgallery.util.ConvertUtil;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -31,58 +32,27 @@ public class FolderServlet extends BaseJsonServlet<FolderRequest, FolderResponse
         responseBean.setType(requestBean.getType());
         List<FileBean> fileList = new ArrayList<>();
         responseBean.setFileList(fileList);
-        if (HttpConstants.FOLDER_TYPE_CONTENT.equals(requestBean.getType())) {
+        if (HttpConstants.FOLDER_TYPE_ALL.equals(requestBean.getFolder())) {
             getContentList(fileList);
-        } else if (HttpConstants.FOLDER_TYPE_FOLDER.equals(requestBean.getType())) {
-            if (HttpConstants.FOLDER_TYPE_ALL.equals(requestBean.getFolder())) {
-                File file = new File(Configuration.getVideoScenePath(getServletContext()));
-                addToFileList(file, fileList);
-                file = new File(Configuration.getVideoStarPathE(getServletContext()));
-                addToFileList(file, fileList);
-                file = new File(Configuration.getVideoStarPathD(getServletContext()));
-                addToFileList(file, fileList);
-            } else {
-                String path = requestBean.getFolder();
-                File file = new File(path);
-                addToFileList(file, fileList);
-            }
+        } else {
+            String path = requestBean.getFolder();
+            File file = new File(path);
+            addToFileList(file, fileList);
         }
         sendResponse(resp, responseBean);
     }
 
     private void getContentList(List<FileBean> fileList) {
-        FileBean bean = new FileBean();
-        bean.setFolder(true);
-        bean.setName(HttpConstants.FOLDER_TYPE_ALL);
-        bean.setPath(HttpConstants.FOLDER_TYPE_ALL);
-        fileList.add(bean);
-
-        File file = new File(Configuration.getVideoScenePath(getServletContext()));
-        bean = new FileBean();
-        bean.setFolder(true);
-        bean.setName(file.getName());
-        bean.setPath(file.getPath());
-        bean.setLastModifyTime(file.lastModified());
-        bean.setSize(getFolderSize(file));
-        fileList.add(bean);
-
-        file = new File(Configuration.getVideoStarPathE(getServletContext()));
-        bean = new FileBean();
-        bean.setFolder(true);
-        bean.setName(file.getName());
-        bean.setPath(file.getPath());
-        bean.setLastModifyTime(file.lastModified());
-        bean.setSize(getFolderSize(file));
-        fileList.add(bean);
-
-        file = new File(Configuration.getVideoStarPathD(getServletContext()));
-        bean = new FileBean();
-        bean.setFolder(true);
-        bean.setName(file.getName());
-        bean.setPath(file.getPath());
-        bean.setLastModifyTime(file.lastModified());
-        bean.setSize(getFolderSize(file));
-        fileList.add(bean);
+        for (int i = 0; i < Constants.getFolderMap().length; i ++) {
+            File file = new File(Constants.getFolderMap()[i][0]);
+            FileBean bean = new FileBean();
+            bean.setFolder(true);
+            bean.setName(file.getName());
+            bean.setPath(file.getPath());
+            bean.setLastModifyTime(file.lastModified());
+            bean.setSize(getFolderSize(file));
+            fileList.add(bean);
+        }
     }
 
     private void addToFileList(File folder, List<FileBean> fileList) {
@@ -105,7 +75,11 @@ public class FolderServlet extends BaseJsonServlet<FolderRequest, FolderResponse
                     bean.setName(fileName);
                     bean.setExtra("");
                 }
+
                 bean.setSize(f.length());
+
+                String url = ConvertUtil.convertUrlPath(f.getPath());
+                bean.setSourceUrl(url);
             }
             bean.setLastModifyTime(f.lastModified());
             fileList.add(bean);
