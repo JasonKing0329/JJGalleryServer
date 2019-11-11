@@ -94,4 +94,14 @@
         <url-pattern>/videoPath</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <description>OpenFileServlet</description>
+        <servlet-name>OpenFileServlet</servlet-name>
+        <servlet-class>com.jing.app.jjgallery.server.OpenFileServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>OpenFileServlet</servlet-name>
+        <url-pattern>/openFile</url-pattern>
+    </servlet-mapping>
+
 </web-app>
