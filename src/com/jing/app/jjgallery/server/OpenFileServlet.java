@@ -33,22 +33,34 @@ public class OpenFileServlet extends BaseJsonServlet<PathRequest, OpenFileRespon
                 responseBean.setErrorMessage("null path");
             }
             else {
-                boolean isExist = false;
-                try {
-                    for (String type: Constants.videoTypes) {
-                        String diskPath = requestBean.getPath() + "/" + requestBean.getName() + type;
-                        isExist = new File(diskPath).exists();
-                        if (isExist) {
-                            FileUtil.openFile(diskPath);
-                            responseBean.setSuccess(true);
-                            break;
+                // 打开文件夹
+                if (requestBean.getName() == null) {
+                    try {
+                        FileUtil.openFile(requestBean.getPath());
+                        responseBean.setSuccess(true);
+                    } catch (Exception e) {
+                        responseBean.setErrorMessage("打开文件目录失败：" + e.getMessage());
+                    }
+                }
+                // 打开文件
+                else {
+                    boolean isExist = false;
+                    try {
+                        for (String type: Constants.videoTypes) {
+                            String diskPath = requestBean.getPath() + "/" + requestBean.getName() + type;
+                            isExist = new File(diskPath).exists();
+                            if (isExist) {
+                                FileUtil.openFile(diskPath);
+                                responseBean.setSuccess(true);
+                                break;
+                            }
                         }
+                        if (!isExist) {
+                            responseBean.setErrorMessage("没有找到文件");
+                        }
+                    } catch (Exception e) {
+                        responseBean.setErrorMessage("打开文件失败：" + e.getMessage());
                     }
-                    if (!isExist) {
-                        responseBean.setErrorMessage("没有找到文件");
-                    }
-                } catch (Exception e) {
-                    responseBean.setErrorMessage("打开文件失败：" + e.getMessage());
                 }
             }
         }
