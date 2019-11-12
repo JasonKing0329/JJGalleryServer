@@ -95,12 +95,12 @@
     </servlet-mapping>
 
     <servlet>
-        <description>OpenFileServlet</description>
-        <servlet-name>OpenFileServlet</servlet-name>
-        <servlet-class>com.jing.app.jjgallery.server.OpenFileServlet</servlet-class>
+        <description>OpenSourceServlet</description>
+        <servlet-name>OpenSourceServlet</servlet-name>
+        <servlet-class>com.jing.app.jjgallery.server.OpenSourceServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>OpenFileServlet</servlet-name>
+        <servlet-name>OpenSourceServlet</servlet-name>
         <url-pattern>/openFile</url-pattern>
     </servlet-mapping>
 

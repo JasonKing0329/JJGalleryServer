@@ -9,10 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * open file on server
- */
-public class OpenFileServlet extends BaseJsonServlet<PathRequest, OpenFileResponse> {
+public class OpenSourceServlet extends BaseJsonServlet<PathRequest, OpenFileResponse> {
 
     @Override
     protected Class<PathRequest> getRequestClass() {
@@ -24,13 +21,14 @@ public class OpenFileServlet extends BaseJsonServlet<PathRequest, OpenFileRespon
         if (requestBean == null) {
             return;
         }
+
         OpenFileResponse responseBean = new OpenFileResponse();
         if (requestBean == null) {
             responseBean.setErrorMessage("null request");
         }
         else {
             if (requestBean.getPath() == null) {
-                responseBean.setErrorMessage("null path");
+                responseBean.setErrorMessage("empty path");
             }
             else {
                 // 打开文件夹
