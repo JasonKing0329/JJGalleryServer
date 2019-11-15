@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.jing.app.jjgallery.conf.SettingProperties;
 import com.jing.app.jjgallery.http.bean.response.GdbMoveResponse;
 import com.jing.app.jjgallery.http.bean.request.GdbRequestMoveBean;
 import com.jing.app.jjgallery.conf.Command;

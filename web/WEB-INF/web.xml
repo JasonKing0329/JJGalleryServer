@@ -45,6 +45,16 @@
     </servlet-mapping>
 
     <servlet>
+        <description>Upload database</description>
+        <servlet-name>UploadDbServlet</servlet-name>
+        <servlet-class>com.jing.app.jjgallery.server.UploadDbServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UploadDbServlet</servlet-name>
+        <url-pattern>/uploaddb</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <description>Gdb service</description>
         <servlet-name>GdbServlet</servlet-name>
         <servlet-class>com.jing.app.jjgallery.server.GdbServlet</servlet-class>
@@ -102,6 +112,16 @@
     <servlet-mapping>
         <servlet-name>OpenFileServlet</servlet-name>
         <url-pattern>/openFile</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <description>VersionServlet</description>
+        <servlet-name>VersionServlet</servlet-name>
+        <servlet-class>com.jing.app.jjgallery.server.VersionServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>VersionServlet</servlet-name>
+        <url-pattern>/version</url-pattern>
     </servlet-mapping>
 
 </web-app>

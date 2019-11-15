@@ -2,6 +2,8 @@ package com.jing.app.jjgallery.conf;
 
 public class Constants {
 
+    public static String DB_NAME = "gdata.db";
+
     public static String[][] getFolderMap() {
         return folderMap;
     }
@@ -26,4 +28,11 @@ public class Constants {
             new String[]{"E:/temp/coolg/server_root/f_temp", "videos/f_temp"}
     };
 
+    public static String[] videoTypes = new String[] {
+            ".mp4", ".wmv", ".mkv", ".avi", ".mov", ".flv", "rmvb"
+    };
+
+    public static String PREF_KEY_UPLOAD_TIME = "pref_upload_time";
+
+    public static String UPLOAD_TYPE_DB = "upload_type_db";
 }

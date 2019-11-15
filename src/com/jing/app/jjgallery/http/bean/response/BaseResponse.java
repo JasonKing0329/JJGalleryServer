@@ -2,7 +2,7 @@ package com.jing.app.jjgallery.http.bean.response;
 
 public class BaseResponse<T> {
 
-    private int result;
+    private int result = -1;
 
     private String message;
 

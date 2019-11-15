@@ -12,12 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
+import com.jing.app.jjgallery.conf.*;
 import com.jing.app.jjgallery.http.bean.response.AppCheckBean;
 import com.jing.app.jjgallery.http.bean.data.DownloadItem;
 import com.jing.app.jjgallery.http.bean.request.GdbCheckNewFileBean;
-import com.jing.app.jjgallery.conf.Command;
-import com.jing.app.jjgallery.conf.Configuration;
-import com.jing.app.jjgallery.conf.Filters;
 
 public class CheckServlet extends HttpServlet {
 
@@ -50,9 +48,9 @@ public class CheckServlet extends HttpServlet {
 
 	private Object checkAppUpdate(String version) {
 		AppCheckBean bean = new AppCheckBean();
-		String localVersion = Configuration.getAppVersion(getServletContext());
+		String localVersion = SettingProperties.getAppVersion(getServletContext());
 		bean.setAppVersion(localVersion);
-		String path = Configuration.getAppPath(getServletContext());
+		String path = Configuration.getAppFilePath(getServletContext());
 		File file = new File(path);
 		bean.setAppName(file.getName());
 		bean.setAppSize(file.length());
@@ -65,9 +63,9 @@ public class CheckServlet extends HttpServlet {
 
 	private Object checkGdbDatabase(String version) {
 		AppCheckBean bean = new AppCheckBean();
-		String localVersion = Configuration.getGdbDatabaseVersion(getServletContext());
+		String localVersion = SettingProperties.getDatabaseVersion(getServletContext());
 		bean.setGdbDabaseVersion(localVersion);
-		String path = Configuration.getGdbDatabasePath(getServletContext());
+		String path = Configuration.getDbPath(getServletContext()) + "/" + Constants.DB_NAME;
 		File file = new File(path);
 		bean.setGdbDabaseName(file.getName());
 		bean.setGdbDabaseSize(file.length());

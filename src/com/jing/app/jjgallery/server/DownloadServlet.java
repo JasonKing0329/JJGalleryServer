@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.jing.app.jjgallery.conf.Command;
 import com.jing.app.jjgallery.conf.Configuration;
+import com.jing.app.jjgallery.conf.Constants;
+import com.jing.app.jjgallery.conf.SettingProperties;
 import com.jing.app.jjgallery.util.ImgCompress;
 import com.jing.app.jjgallery.util.MD5Util;
 
@@ -68,11 +70,15 @@ public class DownloadServlet extends HttpServlet {
 	private File getFilePath(String type, HttpServletRequest req) throws IOException {
 		File file = null;
 		if (type.equals(Command.TYPE_APP)) {
-			String path = Configuration.getAppPath(getServletContext());
+			String path = Configuration.getAppFilePath(getServletContext());
 			file = new File(path);
 		}
 		else if (type.equals(Command.TYPE_GDB_DATABASE)) {
-			String path = Configuration.getGdbDatabasePath(getServletContext());
+			String path = Configuration.getDbPath(getServletContext()) + "/" + Constants.DB_NAME;
+			file = new File(path);
+		}
+		else if (type.equals(Command.TYPE_GDB_DATABASE_UPLOAD)) {
+			String path = Configuration.getUploadDbPath(getServletContext()) + "/" + Constants.DB_NAME;
 			file = new File(path);
 		}
 		else if (type.equals(Command.TYPE_RECORD)) {
