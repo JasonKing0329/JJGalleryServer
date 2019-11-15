@@ -15,7 +15,8 @@ public class Constants {
             new String[]{"F:/myparadise/latestShow/other/star", "videos/f_star"},
             new String[]{"F:/myparadise/latestShow/other/three-way", "videos/f_3"},
             new String[]{"F:/myparadise/latestShow/other/multi-way", "videos/f_multi"},
-            new String[]{"F:/myparadise/latestShow/temp", "videos/f_temp"}
+            new String[]{"F:/myparadise/latestShow/temp", "videos/f_temp"},
+            new String[]{"H:/root/G", "videos/g"}
     };
 
     public static String[][] folderMap_comp = new String[][] {

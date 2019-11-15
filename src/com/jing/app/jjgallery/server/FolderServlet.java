@@ -45,13 +45,15 @@ public class FolderServlet extends BaseJsonServlet<FolderRequest, FolderResponse
     private void getContentList(List<FileBean> fileList) {
         for (int i = 0; i < Constants.getFolderMap().length; i ++) {
             File file = new File(Constants.getFolderMap()[i][0]);
-            FileBean bean = new FileBean();
-            bean.setFolder(true);
-            bean.setName(file.getName());
-            bean.setPath(file.getPath());
-            bean.setLastModifyTime(file.lastModified());
-            bean.setSize(getFolderSize(file));
-            fileList.add(bean);
+            if (file.exists()) {
+                FileBean bean = new FileBean();
+                bean.setFolder(true);
+                bean.setName(file.getName());
+                bean.setPath(file.getPath());
+                bean.setLastModifyTime(file.lastModified());
+                bean.setSize(getFolderSize(file));
+                fileList.add(bean);
+            }
         }
     }
 
