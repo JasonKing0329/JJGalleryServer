@@ -1,11 +1,5 @@
 package com.king.desk.gdata.viewmodel;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import com.king.desk.gdata.Conf;
 import com.king.desk.gdata.Constants;
 import com.king.desk.gdata.Constants.CommonColumn;
@@ -16,16 +10,14 @@ import com.king.desk.gdata.model.TableModel;
 import com.king.desk.gdata.model.bean.ColumnBean;
 import com.king.desk.gdata.model.bean.SaveData;
 import com.king.desk.gdata.model.bean.TableItem;
-import com.king.desk.gdata.model.live.LiveData;
-import com.king.desk.gdata.model.live.Observable;
-import com.king.desk.gdata.model.live.ObservableEmitter;
-import com.king.desk.gdata.model.live.ObservableOnSubscribe;
-import com.king.desk.gdata.model.live.Observer;
-import com.king.service.gdb.bean.GDBProperites;
-import com.king.service.gdb.bean.Record;
-import com.king.service.gdb.bean.RecordStar;
-import com.king.service.gdb.bean.RecordType1v1;
-import com.king.service.gdb.bean.RecordType3w;
+import com.king.desk.gdata.model.live.*;
+import com.king.service.gdb.bean.*;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 public class DataTableViewModel {
 
@@ -477,5 +469,55 @@ public class DataTableViewModel {
 		}
 		Collections.sort(mCurrentList, new TableComparator(column, mDesc));
 		filterDataObserver.setValue(mCurrentList);
+	}
+
+	public void updateFolders(String srcPath, String fromIndex, String toIndex, String targetPath) {
+
+		Observable.create((ObservableOnSubscribe<Boolean>) e -> {
+			boolean changed = false;
+			String src = srcPath.replaceAll("\\\\", "/");
+			String target = targetPath.replaceAll("\\\\", "/");
+			for (int i = 0; i < tableDataObserver.getValue().size(); i++) {
+				TableItem item = tableDataObserver.getValue().get(i);
+				String dir = item.getBean().getDirectory();
+				if (isDirMatch(dir, src, fromIndex, toIndex)) {
+					item.getBean().setDirectory(dir.replace(src, target));
+					item.setBasicChanged(true);
+					changed = true;
+				}
+			}
+			e.onNext(changed);
+		}).subscribe(new Observer<Boolean>() {
+
+			@Override
+			public void onNext(Boolean changed) {
+				if (changed) {
+					setFileChanged(true);
+					tableUpdateObserver.setValue(true);
+				}
+			}
+
+			@Override
+			public void onError(Throwable e) {
+				messageObserver.setValue("备份数据库失败：" + e.getMessage());
+			}
+		});
+	}
+
+	private boolean isDirMatch(String dir, String path, String fromIndex, String toIndex) {
+		String from, to;
+		if (fromIndex == null || fromIndex.trim().length() == 0) {
+			from = path;
+		}
+		else {
+			from = path + "/" + fromIndex;
+		}
+		if (toIndex == null || toIndex.trim().length() == 0) {
+			to = path + "/zzzzzzzzzzz";
+		}
+		else {
+			to = path + "/" + toIndex;
+		}
+		return dir.toLowerCase().compareTo(from.toLowerCase()) >= 0 && dir.toLowerCase().compareTo(to.toLowerCase()) <= 0;
 	}
 }

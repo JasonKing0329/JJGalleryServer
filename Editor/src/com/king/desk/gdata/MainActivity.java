@@ -1,53 +1,9 @@
 package com.king.desk.gdata;
 
-import java.awt.CardLayout;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-import javax.swing.text.BadLocationException;
-
 import com.king.desk.gdata.adapter.BodyRenderer;
 import com.king.desk.gdata.adapter.HeadRenderer;
 import com.king.desk.gdata.adapter.TableAdapter;
-import com.king.desk.gdata.model.DebugLog;
-import com.king.desk.gdata.model.FileUtil;
-import com.king.desk.gdata.model.Preference;
-import com.king.desk.gdata.model.ScreenUtil;
-import com.king.desk.gdata.model.ViewUtil;
+import com.king.desk.gdata.model.*;
 import com.king.desk.gdata.model.bean.TableItem;
 import com.king.desk.gdata.model.live.LiveObserver;
 import com.king.desk.gdata.res.R;
@@ -56,6 +12,19 @@ import com.king.desk.gdata.view.OnConfirmCancelListener;
 import com.king.desk.gdata.view.OnDataChangedListener;
 import com.king.desk.gdata.view.StoppableFrame;
 import com.king.desk.gdata.viewmodel.DataTableViewModel;
+
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import javax.swing.text.BadLocationException;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 public class MainActivity extends BaseActivity {
 
@@ -334,6 +303,17 @@ public class MainActivity extends BaseActivity {
 		
 		horPanel.add(Box.createHorizontalGlue());
 
+		JButton btnBat = new JButton("批量修改目录");
+		btnBat.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				updateFolders();
+			}
+		});
+		horPanel.add(btnBat);
+
+		horPanel.add(Box.createHorizontalStrut(R.dimen.toolbar_item_margin));
+
 		JButton btnStar = new JButton("Stars");
 		btnStar.addActionListener(new ActionListener() {
 			@Override
@@ -396,6 +376,12 @@ public class MainActivity extends BaseActivity {
 		toolbarPanel.add(Box.createVerticalStrut(R.dimen.padding_ver));
 		toolbarPanel.add(horPanel);
 		toolbarPanel.add(Box.createVerticalStrut(20));
+	}
+
+	private void updateFolders() {
+		FolderEditor selector = new FolderEditor();
+		selector.setOnFolderChangedListener((src, from, to, target) -> viewModel.updateFolders(src, from, to, target));
+		selector.showDialog();
 	}
 
 	private void createTable() {

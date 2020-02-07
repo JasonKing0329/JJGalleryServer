@@ -1,13 +1,13 @@
 package com.king.desk.gdata.model;
 
-import java.awt.Rectangle;
+import com.king.desk.gdata.Conf;
+import com.king.desk.gdata.res.R;
+
+import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
-
-import com.king.desk.gdata.Conf;
-import com.king.desk.gdata.res.R;
 
 public class Preference {
 
@@ -61,6 +61,23 @@ public class Preference {
 		properties.setProperty("rec_deprecated_y", String.valueOf(bounds.y));
 		properties.setProperty("rec_deprecated_width", String.valueOf(bounds.width));
 		properties.setProperty("rec_deprecated_height", String.valueOf(bounds.height));
+		updateCreatorProperties();
+	}
+
+	public static Rectangle getFolderEditorFrame() {
+		Rectangle rectangle = new Rectangle();
+		rectangle.x = getInt("rec_folder_editor_x", 0);
+		rectangle.y = getInt("rec_folder_editor_y", 0);
+		rectangle.width = getInt("rec_folder_editor_width", R.dimen.deprecated_def_width);
+		rectangle.height = getInt("rec_folder_editor_height", R.dimen.deprecated_def_height);
+		return rectangle;
+	}
+
+	public static void setFolderEditorFrame(Rectangle bounds) {
+		properties.setProperty("rec_folder_editor_x", String.valueOf(bounds.x));
+		properties.setProperty("rec_folder_editor_y", String.valueOf(bounds.y));
+		properties.setProperty("rec_folder_editor_width", String.valueOf(bounds.width));
+		properties.setProperty("rec_folder_editor_height", String.valueOf(bounds.height));
 		updateCreatorProperties();
 	}
 
