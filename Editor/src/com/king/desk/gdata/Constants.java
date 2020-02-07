@@ -37,13 +37,13 @@ public class Constants {
 		list.add("H:/root/G/3");
 		list.add("H:/root/G/Long");
 		list.add("H:/root/G/multi");
-		list.add("D:/king/game/other/scene");
+		list.add("I:/TDDownload/scene");
 		list.add("D:/king/game/other/star");
 		list.add("E:/TDDOWNLOAD/Other");
 		list.add("F:/myparadise/latestShow/other/star");
-		list.add("F:/myparadise/latestShow/other/three-way");
+		list.add("I:/TDDownload/three-way");
 		list.add("F:/myparadise/latestShow/other/together");
-		list.add("F:/myparadise/latestShow/other/multi-way");
+		list.add("I:/TDDownload/multi-way");
 		return list;
 	}
 

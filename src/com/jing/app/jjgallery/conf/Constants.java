@@ -9,12 +9,12 @@ public class Constants {
     }
 
     public static String[][] folderMap = new String[][] {
-            new String[]{"D:/king/game/other/scene", "videos/d_scene"},
+            new String[]{"I:/TDDownload/scene", "videos/i_scene"},
             new String[]{"D:/king/game/other/star", "videos/d_star"},
             new String[]{"E:/TDDOWNLOAD/Other", "videos/e_star"},
             new String[]{"F:/myparadise/latestShow/other/star", "videos/f_star"},
-            new String[]{"F:/myparadise/latestShow/other/three-way", "videos/f_3"},
-            new String[]{"F:/myparadise/latestShow/other/multi-way", "videos/f_multi"},
+            new String[]{"I:/TDDownload/three-way", "videos/i_3"},
+            new String[]{"I:/TDDownload/multi-way", "videos/i_multi"},
             new String[]{"F:/myparadise/latestShow/temp", "videos/f_temp"},
             new String[]{"H:/root/G", "videos/g"}
     };
