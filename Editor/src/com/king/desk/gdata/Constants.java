@@ -1,5 +1,8 @@
 package com.king.desk.gdata;
 
+import com.king.desk.gdata.model.bean.PathBean;
+import com.king.desk.gdata.model.parser.PathContextParser;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,19 +34,18 @@ public class Constants {
 	public static final String DIR_ALL = "All";
 
 	public static List<String> getDirectoryList() {
+		List<PathBean> serverList = PathContextParser.getInstance().getPathList();
 		List<String> list = new ArrayList<>();
 		list.add("H:/root/G/Actors");
 		list.add("H:/root/G/Scenes");
 		list.add("H:/root/G/3");
 		list.add("H:/root/G/Long");
 		list.add("H:/root/G/multi");
-		list.add("I:/TDDownload/scene");
-		list.add("D:/king/game/other/d_star");
-		list.add("E:/TDDOWNLOAD/Other");
-		list.add("F:/myparadise/latestShow/other/f_star");
-		list.add("I:/TDDownload/three-way");
-		list.add("F:/myparadise/latestShow/other/together");
-		list.add("I:/TDDownload/multi-way");
+		if (serverList != null) {
+			for (PathBean bean:serverList) {
+				list.add(bean.getDocBase());
+			}
+		}
 		return list;
 	}
 

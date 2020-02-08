@@ -470,7 +470,7 @@ public class MainActivity extends BaseActivity {
 
 		searchPanel.add(Box.createHorizontalStrut(R.dimen.toolbar_item_margin));
 
-		JLabel label = new JLabel("搜索文件名或Star");
+		JLabel label = new JLabel("搜索(文件名,Star,Desc.)");
 		searchPanel.add(label);
 
 		searchPanel.add(Box.createHorizontalStrut(R.dimen.toolbar_item_margin));

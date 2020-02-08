@@ -327,6 +327,14 @@ public class DataTableViewModel {
 		return tableModel.getVersion();
 	}
 
+	private boolean isMatchText(String src, String text) {
+		text = text.toLowerCase();
+		if (src != null && src.toLowerCase().contains(text)) {
+			return true;
+		}
+		return false;
+	}
+
 	public void searchTable(String text) {
 		if (text == null || text.length() == 0) {
 			mCurrentList = tableDataObserver.getValue();
@@ -334,23 +342,11 @@ public class DataTableViewModel {
 		else {
 			List<TableItem> list = new ArrayList<>();
 			for (TableItem item : tableDataObserver.getValue()) {
-				String name = item.getBean().getName();
-				if (name != null && name.toLowerCase().contains(text.toLowerCase())) {
-					list.add(item);
-					continue;
-				}
-				String top = item.getTop();
-				if (top != null && top.toLowerCase().contains(text.toLowerCase())) {
-					list.add(item);
-					continue;
-				}
-				String bottom = item.getBottom();
-				if (bottom != null && bottom.toLowerCase().contains(text.toLowerCase())) {
-					list.add(item);
-					continue;
-				}
-				String mix = item.getMix();
-				if (mix != null && mix.toLowerCase().contains(text.toLowerCase())) {
+				if (isMatchText(item.getBean().getName(), text)
+						|| isMatchText(item.getTop(), text)
+						|| isMatchText(item.getBottom(), text)
+						|| isMatchText(item.getMix(), text)
+						|| isMatchText(item.getBean().getSpecialDesc(), text)) {
 					list.add(item);
 					continue;
 				}
@@ -464,9 +460,10 @@ public class DataTableViewModel {
 	}
 
 	public void sortRecords(CommonColumn column) {
-		if (column != mSortColumn) {
+		if (column == mSortColumn) {
 			mDesc = !mDesc;
 		}
+		mSortColumn = column;
 		Collections.sort(mCurrentList, new TableComparator(column, mDesc));
 		filterDataObserver.setValue(mCurrentList);
 	}

@@ -1,7 +1,5 @@
 package com.jing.app.jjgallery.http.bean.response;
 
-import com.google.gson.annotations.SerializedName;
-
 /**
  * 描述:
  * <p/>作者：景阳
@@ -9,7 +7,6 @@ import com.google.gson.annotations.SerializedName;
  */
 public class GdbMoveResponse {
 
-    @SerializedName("isSuccess")
     private boolean isSuccess;
 
     public boolean isSuccess() {

@@ -1,10 +1,10 @@
 package com.jing.app.jjgallery.server;
 
-import com.jing.app.jjgallery.conf.Constants;
+import com.jing.app.jjgallery.http.HttpConstants;
 import com.jing.app.jjgallery.http.bean.data.FileBean;
 import com.jing.app.jjgallery.http.bean.request.FolderRequest;
 import com.jing.app.jjgallery.http.bean.response.FolderResponse;
-import com.jing.app.jjgallery.http.HttpConstants;
+import com.jing.app.jjgallery.model.parser.PathContextParser;
 import com.jing.app.jjgallery.util.ConvertUtil;
 
 import javax.servlet.http.HttpServletResponse;
@@ -28,6 +28,7 @@ public class FolderServlet extends BaseJsonServlet<FolderRequest, FolderResponse
         if (requestBean == null) {
             return;
         }
+
         FolderResponse responseBean = new FolderResponse();
         responseBean.setType(requestBean.getType());
         List<FileBean> fileList = new ArrayList<>();
@@ -43,16 +44,18 @@ public class FolderServlet extends BaseJsonServlet<FolderRequest, FolderResponse
     }
 
     private void getContentList(List<FileBean> fileList) {
-        for (int i = 0; i < Constants.getFolderMap().length; i ++) {
-            File file = new File(Constants.getFolderMap()[i][0]);
-            if (file.exists()) {
-                FileBean bean = new FileBean();
-                bean.setFolder(true);
-                bean.setName(file.getName());
-                bean.setPath(file.getPath());
-                bean.setLastModifyTime(file.lastModified());
-                bean.setSize(getFolderSize(file));
-                fileList.add(bean);
+        if (PathContextParser.getInstance().getPathList() != null) {
+            for (int i = 0; i < PathContextParser.getInstance().getPathList().size(); i ++) {
+                File file = new File(PathContextParser.getInstance().getPathList().get(i).getDocBase());
+                if (file.exists()) {
+                    FileBean bean = new FileBean();
+                    bean.setFolder(true);
+                    bean.setName(file.getName());
+                    bean.setPath(file.getPath());
+                    bean.setLastModifyTime(file.lastModified());
+                    bean.setSize(getFolderSize(file));
+                    fileList.add(bean);
+                }
             }
         }
     }
