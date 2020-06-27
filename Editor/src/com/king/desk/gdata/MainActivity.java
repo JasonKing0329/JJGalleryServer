@@ -12,7 +12,6 @@ import com.king.desk.gdata.view.OnConfirmCancelListener;
 import com.king.desk.gdata.view.OnDataChangedListener;
 import com.king.desk.gdata.view.StoppableFrame;
 import com.king.desk.gdata.viewmodel.DataTableViewModel;
-import com.king.service.udp.UdpSender;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -38,11 +37,11 @@ public class MainActivity extends BaseActivity {
 	private JCheckBox cbDeleteStarOption;
 	private JScrollPane tableScrollPane;
 	private JTextField textSearchField;
-	
+
 	private JPanel tablePanel;
 	private JPanel toolbarPanel;
 	private JPanel searchPanel;
-	
+
 	private final String CARD_MAIN = "card_main";
 
 	private final String CARD_LOADING = "card_loading";
@@ -52,7 +51,7 @@ public class MainActivity extends BaseActivity {
 	private TableAdapter tableAdapter;
 
 	private JPanel loadingPane;
-	
+
 	private DocumentListener mTextWatcher;
 
 	/**
@@ -94,7 +93,7 @@ public class MainActivity extends BaseActivity {
 		// 为了使控件能随窗口大小变化而变化，content使用GridBagLayout与BoxLayout结合使用的方法
 		// 为了又能支持loading界面，只好用CardLayout包裹一层
 		// 缺点是loadingPane只能整个显示在content纸上，无法背景透明
-		
+
 		initFrame();
 		initLoading();
 		initMainContent();
@@ -108,24 +107,24 @@ public class MainActivity extends BaseActivity {
 		frame.setResizable(true);
 		frame.setVisible(true);
 		frame.addComponentListener(new ComponentListener() {
-			
+
 			@Override
 			public void componentShown(ComponentEvent arg0) {}
-			
+
 			@Override
 			public void componentResized(ComponentEvent arg0) {
 				Preference.setMainActivityFrame(frame.getBounds());
 			}
-			
+
 			@Override
 			public void componentMoved(ComponentEvent arg0) {
 				Preference.setMainActivityFrame(frame.getBounds());
 			}
-			
+
 			@Override
 			public void componentHidden(ComponentEvent arg0) {}
 		});
-		
+
 		frame.setLayout(new CardLayout());
 		frame.setOnCloseListener(new StoppableFrame.OnCloseListener() {
 
@@ -133,21 +132,21 @@ public class MainActivity extends BaseActivity {
 			public boolean stopClose() {
 				return viewModel.isFileChanged();
 			}
-			
+
 			@Override
 			public void warningClose() {
 				showConfirmCancel("当前文件有改动，继续退出将会放弃修改，是否继续？"
 						, "警告", new OnConfirmCancelListener() {
-							
+
 							@Override
 							public void onConfirm() {
 								viewModel.destroy();
 								frame.dispose();
 							}
-							
+
 							@Override
 							public void onCancel() {
-								
+
 							}
 						});
 			}
@@ -165,7 +164,7 @@ public class MainActivity extends BaseActivity {
 	}
 
 	private void initMainContent() {
-		
+
 		JPanel mainPanel = new JPanel();
 		// panelContainer 的布局为 GridBagLayout
 		mainPanel.setLayout(new GridBagLayout());
@@ -175,29 +174,29 @@ public class MainActivity extends BaseActivity {
 		createSearchbar();
 		createTable();
 
-		GridBagConstraints gbcToolbar = new GridBagConstraints(); 
-		gbcToolbar.gridx = 0; 
+		GridBagConstraints gbcToolbar = new GridBagConstraints();
+		gbcToolbar.gridx = 0;
 		gbcToolbar.gridy = 0;// 行
-		gbcToolbar.weightx = 1.0; 
-		gbcToolbar.weighty = 0; 
-		gbcToolbar.fill = GridBagConstraints.HORIZONTAL ; 
-		mainPanel.add(toolbarPanel, gbcToolbar); 
+		gbcToolbar.weightx = 1.0;
+		gbcToolbar.weighty = 0;
+		gbcToolbar.fill = GridBagConstraints.HORIZONTAL ;
+		mainPanel.add(toolbarPanel, gbcToolbar);
 
-		GridBagConstraints gbcSearch = new GridBagConstraints(); 
-		gbcSearch.gridx = 0; 
+		GridBagConstraints gbcSearch = new GridBagConstraints();
+		gbcSearch.gridx = 0;
 		gbcSearch.gridy = 1; // 行
-		gbcSearch.weightx = 1.0; 
-		gbcSearch.weighty = 0; 
-		gbcSearch.fill = GridBagConstraints.HORIZONTAL ; 
+		gbcSearch.weightx = 1.0;
+		gbcSearch.weighty = 0;
+		gbcSearch.fill = GridBagConstraints.HORIZONTAL ;
 		mainPanel.add(searchPanel, gbcSearch);
-		
-		GridBagConstraints gbcTable = new GridBagConstraints(); 
-		gbcTable.gridx = 0; 
+
+		GridBagConstraints gbcTable = new GridBagConstraints();
+		gbcTable.gridx = 0;
 		gbcTable.gridy = 2; // 行
-		gbcTable.weightx = 1.0; 
-		gbcTable.weighty = 1.0; 
-		gbcTable.fill = GridBagConstraints.BOTH ; 
-		mainPanel.add(tablePanel, gbcTable); 
+		gbcTable.weightx = 1.0;
+		gbcTable.weighty = 1.0;
+		gbcTable.fill = GridBagConstraints.BOTH ;
+		mainPanel.add(tablePanel, gbcTable);
 	}
 
 	/**
@@ -228,11 +227,11 @@ public class MainActivity extends BaseActivity {
 	private void createToolbar() {
 		toolbarPanel = new JPanel();
 		toolbarPanel.setLayout(new BoxLayout(toolbarPanel, BoxLayout.Y_AXIS));
-		
+
 		JPanel horPanel = new JPanel();
 		horPanel.setLayout(new BoxLayout(horPanel, BoxLayout.X_AXIS));
 		horPanel.add(Box.createHorizontalStrut(R.dimen.padding_hor));
-		
+
 		JPanel leftContainer = new JPanel();
 		leftContainer.setPreferredSize(new Dimension(600, R.dimen.toolbar_height));
 		leftContainer.setLayout(new BoxLayout(leftContainer, BoxLayout.X_AXIS));
@@ -253,7 +252,7 @@ public class MainActivity extends BaseActivity {
 		leftContainer.add(comboBox);
 
 		leftContainer.add(Box.createHorizontalStrut(R.dimen.toolbar_item_margin));
-		
+
 		JButton btnNew = new JButton("New record");
 		ViewUtil.setIcon(btnNew, R.drawable.ic_add, 20, 20);
 //		btnNew.setPreferredSize(new Dimension(140, R.dimen.toolbar_height));
@@ -271,15 +270,15 @@ public class MainActivity extends BaseActivity {
 		leftContainer.add(btnNew);
 
 		leftContainer.add(Box.createHorizontalStrut(R.dimen.toolbar_item_margin));
-		
+
 		cbDeleteStarOption = new JCheckBox("删除多余Star");
 		leftContainer.add(cbDeleteStarOption);
 
 		leftContainer.add(Box.createHorizontalStrut(R.dimen.toolbar_item_margin));
-		
+
 		cbVersion = new JCheckBox("修改版本号");
 		cbVersion.addItemListener(new ItemListener() {
-			
+
 			@Override
 			public void itemStateChanged(ItemEvent arg0) {
 				if (cbVersion.isSelected()) {
@@ -301,18 +300,18 @@ public class MainActivity extends BaseActivity {
 		textAreaVersion.setVisible(false);
 		leftContainer.add(textAreaVersion);
 		horPanel.add(leftContainer);
-		
+
 		horPanel.add(Box.createHorizontalGlue());
 
-		JButton btnUdp = new JButton("发送UDP广播");
-		btnUdp.addActionListener(new ActionListener() {
+		JButton btnServerSetting = new JButton("服务端配置");
+		btnServerSetting.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// 发送udp广播，向client告知server的IP及端口
-				new UdpSender().startSend();
+				ServerSetting selector = new ServerSetting();
+				selector.showDialog();
 			}
 		});
-		horPanel.add(btnUdp);
+		horPanel.add(btnServerSetting);
 
 		horPanel.add(Box.createHorizontalStrut(R.dimen.toolbar_item_margin));
 
@@ -337,7 +336,7 @@ public class MainActivity extends BaseActivity {
 		horPanel.add(btnStar);
 
 		horPanel.add(Box.createHorizontalStrut(R.dimen.toolbar_item_margin));
-		
+
 		JButton btnServer = new JButton("Server dir");
 		btnServer.addActionListener(new ActionListener() {
 			@Override
@@ -353,7 +352,7 @@ public class MainActivity extends BaseActivity {
 		horPanel.add(btnServer);
 
 		horPanel.add(Box.createHorizontalStrut(R.dimen.toolbar_item_margin));
-		
+
 		JButton btnCreator = new JButton("Creator dir");
 		btnCreator.addActionListener(new ActionListener() {
 			@Override
@@ -369,12 +368,12 @@ public class MainActivity extends BaseActivity {
 		horPanel.add(btnCreator);
 
 		horPanel.add(Box.createHorizontalStrut(R.dimen.toolbar_item_margin));
-		
+
 		JButton btnSave = new JButton("保存");
 		int width = 80;
 		btnNew.setPreferredSize(new Dimension(width, R.dimen.toolbar_height));
 		btnSave.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				viewModel.setDeleteStarWithoutRecords(cbDeleteStarOption.isSelected());
@@ -383,9 +382,9 @@ public class MainActivity extends BaseActivity {
 			}
 		});
 		horPanel.add(btnSave);
-		
+
 		horPanel.add(Box.createHorizontalStrut(R.dimen.padding_hor));
-		
+
 		toolbarPanel.add(Box.createVerticalStrut(R.dimen.padding_ver));
 		toolbarPanel.add(horPanel);
 		toolbarPanel.add(Box.createVerticalStrut(20));
@@ -403,21 +402,21 @@ public class MainActivity extends BaseActivity {
 
 		JPanel horPanel = new JPanel();
 		horPanel.setLayout(new BoxLayout(horPanel, BoxLayout.X_AXIS));
-		
+
 		// 必须这样设置renderer，使用setDefaultRenderer不管用
 		table = new JTable() {
 			@Override
 			public TableCellRenderer getDefaultRenderer(Class<?> arg0) {
-			
+
 				return tableCellRenderer;
 			}
-			
+
 		};
 		// 禁止每个单元格宽度均分
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		// 只对单元格有效，表头的事件通过后面updateColumnWidth里的方法实现
 		table.addMouseListener(new MouseClickListener() {
-			
+
 			@Override
 			public void onClickRightMouse(MouseEvent event) {
 				int row = table.rowAtPoint(event.getPoint());
@@ -433,7 +432,7 @@ public class MainActivity extends BaseActivity {
 					}
 				}
 			}
-			
+
 			@Override
 			public void onClickLeftMouse(MouseEvent event) {
 				int row = table.rowAtPoint(event.getPoint());
@@ -446,7 +445,7 @@ public class MainActivity extends BaseActivity {
 				}
 			}
 		});
-		
+
 		tableScrollPane = new JScrollPane(table);
 
 		horPanel.add(Box.createHorizontalStrut(R.dimen.padding_hor));
@@ -487,10 +486,10 @@ public class MainActivity extends BaseActivity {
 		searchPanel.add(label);
 
 		searchPanel.add(Box.createHorizontalStrut(R.dimen.toolbar_item_margin));
-		
+
 		textSearchField = new JTextField();
 		mTextWatcher = new DocumentListener() {
-			
+
 			@Override
 			public void removeUpdate(DocumentEvent event) {
 				try {
@@ -500,7 +499,7 @@ public class MainActivity extends BaseActivity {
 					e.printStackTrace();
 				}
 			}
-			
+
 			@Override
 			public void insertUpdate(DocumentEvent event) {
 				try {
@@ -510,7 +509,7 @@ public class MainActivity extends BaseActivity {
 					e.printStackTrace();
 				}
 			}
-			
+
 			@Override
 			public void changedUpdate(DocumentEvent event) {
 			}
@@ -522,7 +521,7 @@ public class MainActivity extends BaseActivity {
 
 		final JCheckBox cbModify = new JCheckBox("只显示待更新数据");
 		cbModify.addItemListener(new ItemListener() {
-			
+
 			@Override
 			public void itemStateChanged(ItemEvent arg0) {
 				if (cbModify.isSelected()) {
@@ -542,7 +541,7 @@ public class MainActivity extends BaseActivity {
 		RecordStarActivity activity = new RecordStarActivity(viewModel.getTableItem(row));
 		activity.setViewModel(viewModel);
 		activity.setOnEditorListener(new RecordStarActivity.OnEditorListener() {
-			
+
 			@Override
 			public void onEditorChanged(TableItem item) {
 				if (item.isStarChanged()) {
@@ -557,7 +556,7 @@ public class MainActivity extends BaseActivity {
 		DetailActivity activity = new DetailActivity(viewModel.getTableItem(row));
 		activity.setViewModel(viewModel);
 		activity.setOnEditorListener(new DetailActivity.OnEditorListener() {
-			
+
 			@Override
 			public void onEditorChanged(TableItem item) {
 				notifyDataSetChanged();
@@ -604,7 +603,7 @@ public class MainActivity extends BaseActivity {
 					frame.setTitle(getTitle(false));
 					cbVersion.setSelected(false);
 					cbDeleteStarOption.setSelected(false);
-					
+
 					// 清空输入框，会触发removeUpdate，所以要先删除listener
 					textSearchField.getDocument().removeDocumentListener(mTextWatcher);
 					textSearchField.setText("");
@@ -627,12 +626,12 @@ public class MainActivity extends BaseActivity {
 					@Override
 					public void onChanged(List<TableItem> value) {
 						tableCellRenderer.setDataList(value);
-						
+
 						tableAdapter = new TableAdapter();
 						tableAdapter.setColumnList(viewModel.getColumnList());
 						tableAdapter.setTableItemList(value);
 						tableAdapter.setOnDataChangedListener(new OnDataChangedListener() {
-							
+
 							@Override
 							public void onDataChanged(String value, int row, int col) {
 								viewModel.changeItemValue(value, row, col);
@@ -684,16 +683,16 @@ public class MainActivity extends BaseActivity {
 			for (int i = 0; i < cm.getColumnCount(); i++) {
 				cm.getColumn(i).setHeaderRenderer(renderer);
 			}
-			
+
 			// listener
 			table.getTableHeader().addMouseListener(new MouseClickListener() {
-				
+
 				@Override
 				public void onClickRightMouse(MouseEvent event) {
 					int position = table.columnAtPoint(event.getPoint());
 					DebugLog.e("column " + position);
 				}
-				
+
 				@Override
 				public void onClickLeftMouse(MouseEvent event) {
 					int position = table.columnAtPoint(event.getPoint());
@@ -703,14 +702,14 @@ public class MainActivity extends BaseActivity {
 			});
 		}
 	}
-	
+
 	private void showDeletePopup(final int row, MouseEvent event) {
 		JPopupMenu popupMenu = new JPopupMenu();
 
-        JMenuItem openItem = new JMenuItem();
-        openItem.setText("打开所在目录");
-        openItem.addActionListener(new ActionListener() {
-			
+		JMenuItem openItem = new JMenuItem();
+		openItem.setText("打开所在目录");
+		openItem.addActionListener(new ActionListener() {
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				String dir = viewModel.getTableItem(row).getBean().getDirectory();
@@ -722,68 +721,68 @@ public class MainActivity extends BaseActivity {
 				}
 			}
 		});
-        popupMenu.add(openItem);
-        
-        JMenuItem delMenItem = new JMenuItem();
-        if (viewModel.getTableItem(row).isDeleted()) {
-            delMenItem.setText("取消删除");
-		}
-        else {
-            delMenItem.setText("删除行");
-		}
-        delMenItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
+		popupMenu.add(openItem);
 
-            	// 取消删除
-                if (viewModel.getTableItem(row).isDeleted()) {
-                	viewModel.getTableItem(row).setDeleted(false);
-    				notifyDataSetChanged();
-                }
-                else {
-                	showConfirmCancel("确认删除？", "删除", new OnConfirmCancelListener() {
-    					
-    					@Override
-    					public void onConfirm() {
-    						viewModel.deleteItem(row);
-    						notifyDataSetChanged();
-    					}
-    					
-    					@Override
-    					public void onCancel() {
-    						
-    					}
-    				});
+		JMenuItem delMenItem = new JMenuItem();
+		if (viewModel.getTableItem(row).isDeleted()) {
+			delMenItem.setText("取消删除");
+		}
+		else {
+			delMenItem.setText("删除行");
+		}
+		delMenItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+
+				// 取消删除
+				if (viewModel.getTableItem(row).isDeleted()) {
+					viewModel.getTableItem(row).setDeleted(false);
+					notifyDataSetChanged();
 				}
-            }
-        });
-        popupMenu.add(delMenItem);
+				else {
+					showConfirmCancel("确认删除？", "删除", new OnConfirmCancelListener() {
+
+						@Override
+						public void onConfirm() {
+							viewModel.deleteItem(row);
+							notifyDataSetChanged();
+						}
+
+						@Override
+						public void onCancel() {
+
+						}
+					});
+				}
+			}
+		});
+		popupMenu.add(delMenItem);
 
 		JMenuItem dirMenItem = new JMenuItem();
 		dirMenItem.setText("修改目录");
 		dirMenItem.addActionListener(evt -> {
-            DirectorySelector selector = new DirectorySelector();
-            selector.setOnResultSetListener(text -> {
-            	viewModel.updateDirectory(row, text);
-            });
-            selector.showDialog();
-        });
+			DirectorySelector selector = new DirectorySelector();
+			selector.setOnResultSetListener(text -> {
+				viewModel.updateDirectory(row, text);
+			});
+			selector.showDialog();
+		});
 		popupMenu.add(dirMenItem);
 		popupMenu.show(table, event.getX(), event.getY());
-    }
+	}
 
 	protected void showReadDatePopup(final int row, MouseEvent event) {
 		JPopupMenu popupMenu = new JPopupMenu();
 
-        JMenuItem delMenItem = new JMenuItem();
-        delMenItem.setText("读取文件最后修改时间");
-        delMenItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-            	viewModel.readFileDate(row);
-            }
-        });
-        popupMenu.add(delMenItem);
-        popupMenu.show(table, event.getX(), event.getY());
-    }
+		JMenuItem delMenItem = new JMenuItem();
+		delMenItem.setText("读取文件最后修改时间");
+		delMenItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				viewModel.readFileDate(row);
+			}
+		});
+		popupMenu.add(delMenItem);
+		popupMenu.show(table, event.getX(), event.getY());
+	}
 
 	protected void notifyDataSetChanged() {
 		// 改变数据集中某个变量的属性后
@@ -805,7 +804,7 @@ public class MainActivity extends BaseActivity {
 		loadingPane = new JPanel();
 		loadingPane.setLayout(null);
 		frame.getContentPane().add(CARD_LOADING, loadingPane);
-		
+
 		lableLoading = new JLabel(new ImageIcon(R.drawable.loading));
 		int margin = (ScreenUtil.getScreenWidth() - 800) / 2;
 		lableLoading.setBounds(margin, R.dimen.table_top

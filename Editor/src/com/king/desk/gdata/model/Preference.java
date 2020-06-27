@@ -12,7 +12,16 @@ import java.util.Properties;
 public class Preference {
 
 	private static Properties properties;
-	
+
+	/**
+	 * 用于单个main()调试用
+	 */
+	public static void createIfNotInit() {
+		if (properties == null) {
+			create();
+		}
+	}
+
 	public static void create() {
 		properties = new Properties();
 		try {
@@ -115,6 +124,23 @@ public class Preference {
 		updateCreatorProperties();
 	}
 
+	public static Rectangle getServerSettingFrame() {
+		Rectangle rectangle = new Rectangle();
+		rectangle.x = getInt("rec_server_setting_x", 0);
+		rectangle.y = getInt("rec_server_setting_y", 0);
+		rectangle.width = getInt("rec_server_setting_width", R.dimen.deprecated_def_width);
+		rectangle.height = getInt("rec_server_setting_height", R.dimen.deprecated_def_height);
+		return rectangle;
+	}
+
+	public static void setServerSettingFrame(Rectangle bounds) {
+		properties.setProperty("rec_server_setting_x", String.valueOf(bounds.x));
+		properties.setProperty("rec_server_setting_y", String.valueOf(bounds.y));
+		properties.setProperty("rec_server_setting_width", String.valueOf(bounds.width));
+		properties.setProperty("rec_server_setting_height", String.valueOf(bounds.height));
+		updateCreatorProperties();
+	}
+
 	private static int getInt(String key) {
 		return getInt(key, 0);
 	}
@@ -125,5 +151,23 @@ public class Preference {
 		} catch (Exception e) {
 			return defaultValue;
 		}
+	}
+
+	public static int getServerPort() {
+		return getInt("server_port", 8080);
+	}
+
+	public static void setServerPort(int value) {
+		properties.setProperty("server_port", String.valueOf(value));
+		updateCreatorProperties();
+	}
+
+	public static String getServerName() {
+		return properties.getProperty("server_name");
+	}
+
+	public static void setServerName(String value) {
+		properties.setProperty("server_name", value);
+		updateCreatorProperties();
 	}
 }

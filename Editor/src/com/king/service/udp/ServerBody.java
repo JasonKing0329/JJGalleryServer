@@ -10,10 +10,12 @@ public class ServerBody {
 
     private String identity;
     private int port;
+    private String extraUrl;
 
-    public ServerBody(String identity, int port) {
+    public ServerBody(String identity, int port, String extraUrl) {
         this.identity = identity;
         this.port = port;
+        this.extraUrl = extraUrl;
     }
 
     public String getIdentity() {
@@ -30,5 +32,13 @@ public class ServerBody {
 
     public void setPort(int port) {
         this.port = port;
+    }
+
+    public String getExtraUrl() {
+        return extraUrl;
+    }
+
+    public void setExtraUrl(String extraUrl) {
+        this.extraUrl = extraUrl;
     }
 }
