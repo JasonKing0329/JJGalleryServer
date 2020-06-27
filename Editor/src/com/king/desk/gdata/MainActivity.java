@@ -12,6 +12,7 @@ import com.king.desk.gdata.view.OnConfirmCancelListener;
 import com.king.desk.gdata.view.OnDataChangedListener;
 import com.king.desk.gdata.view.StoppableFrame;
 import com.king.desk.gdata.viewmodel.DataTableViewModel;
+import com.king.service.udp.UdpSender;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -302,6 +303,18 @@ public class MainActivity extends BaseActivity {
 		horPanel.add(leftContainer);
 		
 		horPanel.add(Box.createHorizontalGlue());
+
+		JButton btnUdp = new JButton("发送UDP广播");
+		btnUdp.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// 发送udp广播，向client告知server的IP及端口
+				new UdpSender().startSend();
+			}
+		});
+		horPanel.add(btnUdp);
+
+		horPanel.add(Box.createHorizontalStrut(R.dimen.toolbar_item_margin));
 
 		JButton btnBat = new JButton("批量修改目录");
 		btnBat.addActionListener(new ActionListener() {
