@@ -391,10 +391,13 @@ public class MainActivity extends BaseActivity {
 	}
 
 	private void updateFolders() {
-		FolderEditor selector = new FolderEditor();
-		selector.setOnFolderChangedListener((src, from, to, target) -> viewModel.updateFolders(src, from, to, target));
-		selector.showDialog();
+		folderEditor = new FolderEditor();
+		folderEditor.setDataTableViewModel(viewModel);
+		folderEditor.setOnFolderChangedListener((src, from, to, target) -> viewModel.updateFolders(src, from, to, target));
+		folderEditor.showDialog();
 	}
+
+	private FolderEditor folderEditor;
 
 	private void createTable() {
 		tablePanel = new JPanel();
@@ -643,6 +646,15 @@ public class MainActivity extends BaseActivity {
 						updateColumnWidth();
 					}
 				});
+
+		viewModel.removeProgressText.observe(new LiveObserver<String>() {
+			@Override
+			public void onChanged(String value) {
+				if (folderEditor != null) {
+					folderEditor.updateProgress(value);
+				}
+			}
+		});
 
 		if (new File(Conf.FILE_DB).exists()) {
 			// 每次启动后自动备份到history目录下

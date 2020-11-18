@@ -1,6 +1,7 @@
 package com.king.desk.gdata;
 
 import com.king.desk.gdata.model.Preference;
+import com.king.desk.gdata.viewmodel.DataTableViewModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,8 +15,15 @@ public class FolderEditor extends JDialog {
     private JTextField textSrcFrom;
     private JTextField textSrcTo;
     private JTextField textTarget;
+    private JButton btnRemove;
+    private JLabel labelProgress;
+    private DataTableViewModel dataTableViewModel;
 
     private OnFolderChangedListener onFolderChangedListener;
+
+    public void setDataTableViewModel(DataTableViewModel dataTableViewModel) {
+        this.dataTableViewModel = dataTableViewModel;
+    }
 
     public FolderEditor() {
         addComponentListener(new ComponentListener() {
@@ -70,6 +78,12 @@ public class FolderEditor extends JDialog {
                 onCancel();
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        btnRemove.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                removeImages();
+            }
+        });
     }
 
     public void setOnFolderChangedListener(OnFolderChangedListener onFolderChangedListener) {
@@ -110,6 +124,18 @@ public class FolderEditor extends JDialog {
         setLocation(rectangle.x, rectangle.y);
         pack();
         setVisible(true);
+    }
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
+    }
+
+    private void removeImages() {
+        dataTableViewModel.removeUselessImages();
+    }
+
+    public void updateProgress(String value) {
+        labelProgress.setText(value);
     }
 
     public interface OnFolderChangedListener {

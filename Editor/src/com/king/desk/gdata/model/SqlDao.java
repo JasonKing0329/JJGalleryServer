@@ -1,22 +1,12 @@
 package com.king.desk.gdata.model;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import com.king.service.gdb.bean.*;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.king.service.gdb.bean.GDBProperites;
-import com.king.service.gdb.bean.Record;
-import com.king.service.gdb.bean.RecordStar;
-import com.king.service.gdb.bean.RecordType1v1;
-import com.king.service.gdb.bean.RecordType3w;
-import com.king.service.gdb.bean.Star;
 
 public class SqlDao {
 
@@ -158,7 +148,33 @@ public class SqlDao {
 	public List<Record> queryRecords() {
 		return queryRecords(-1);
 	}
-	
+
+	public boolean isRecordExist(String name) {
+		if (name.contains("'")) {
+			name = name.replace("'", "''");
+		}
+		String sql = "SELECT * FROM " + TABLE_RECORD + " WHERE name='" + name + "'";
+		Statement statement = null;
+		try {
+			statement = connection.createStatement();
+			ResultSet set = statement.executeQuery(sql);
+			if (set.next()) {
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (statement != null) {
+					statement.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
 	public List<Record> queryRecords(int type) {
 		String sql = "SELECT * FROM " + TABLE_RECORD;
 		if (type != -1) {

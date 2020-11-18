@@ -1,30 +1,19 @@
 package com.king.desk.gdata.model;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
 import com.king.desk.gdata.Conf;
 import com.king.desk.gdata.Constants;
 import com.king.desk.gdata.Constants.CommonColumn;
 import com.king.desk.gdata.model.bean.ColumnBean;
 import com.king.desk.gdata.model.bean.SaveData;
 import com.king.desk.gdata.model.bean.TableItem;
-import com.king.service.gdb.bean.GDBProperites;
-import com.king.service.gdb.bean.Record;
-import com.king.service.gdb.bean.RecordStar;
-import com.king.service.gdb.bean.RecordType1v1;
-import com.king.service.gdb.bean.RecordType3w;
-import com.king.service.gdb.bean.Star;
+import com.king.service.gdb.bean.*;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class TableModel {
 
@@ -499,6 +488,10 @@ public class TableModel {
             SqlInstance.get().getDao().updateCountStar(star, mSaveData.isDeleteStarWithoutRecords());
         }
         SqlInstance.get().getDao().commit();
+    }
+
+    public boolean isRecordExist(String name) {
+        return SqlInstance.get().getDao().isRecordExist(name);
     }
 
     private Star getStar(String name) {

@@ -1,6 +1,6 @@
 package com.king.desk.gdata.model;
 
-import java.awt.Desktop;
+import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -35,4 +35,14 @@ public class FileUtil {
         in.close();
         out.close();
 	}
+
+    public static void deleteFile(File removeFile) {
+	    if (removeFile.isDirectory()) {
+            File[] files = removeFile.listFiles();
+            for (File f:files) {
+                deleteFile(f);
+            }
+        }
+        removeFile.delete();
+    }
 }

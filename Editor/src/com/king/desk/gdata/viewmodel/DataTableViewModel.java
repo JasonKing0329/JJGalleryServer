@@ -3,16 +3,14 @@ package com.king.desk.gdata.viewmodel;
 import com.king.desk.gdata.Conf;
 import com.king.desk.gdata.Constants;
 import com.king.desk.gdata.Constants.CommonColumn;
-import com.king.desk.gdata.model.FileUtil;
-import com.king.desk.gdata.model.SqlInstance;
-import com.king.desk.gdata.model.TableComparator;
-import com.king.desk.gdata.model.TableModel;
+import com.king.desk.gdata.model.*;
 import com.king.desk.gdata.model.bean.ColumnBean;
 import com.king.desk.gdata.model.bean.SaveData;
 import com.king.desk.gdata.model.bean.TableItem;
 import com.king.desk.gdata.model.live.*;
 import com.king.service.gdb.bean.*;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,6 +27,7 @@ public class DataTableViewModel {
 	public LiveData<Boolean> fileChangeObserver = new LiveData<>();
 	public LiveData<Boolean> tableUpdateObserver = new LiveData<>();
 	public LiveData<Boolean> saveSuccessObserver = new LiveData<>();
+	public LiveData<String> removeProgressText = new LiveData<>();
 
 	private List<TableItem> mCurrentList;
 	
@@ -517,4 +516,49 @@ public class DataTableViewModel {
 		}
 		return dir.toLowerCase().compareTo(from.toLowerCase()) >= 0 && dir.toLowerCase().compareTo(to.toLowerCase()) <= 0;
 	}
+
+	public void removeUselessImages() {
+
+		Observable.create((ObservableOnSubscribe<String>) e -> {
+			String folder = "D:/king/game/other/img/gdb/record/added";
+			File file = new File(folder);
+			File[] files = file.listFiles();
+			List<File> removeList = new ArrayList<>();
+			removeProgressText.setValue("开始检查待删除文件");
+			for (File f:files) {
+				String name = f.getName();
+				if (!f.isDirectory()) {
+					name = name.substring(0, name.lastIndexOf("."));
+				}
+				if (!tableModel.isRecordExist(name)) {
+					removeList.add(f);
+					DebugLog.e("not exist: " + f.getName());
+				}
+			}
+			removeProgressText.setValue("检测到" + removeList.size() + "个文件需要删除");
+			int progress = 0;
+			for (int i = 0; i < removeList.size(); i ++) {
+				File removeFile = removeList.get(i);
+				int cur = (int) ((float) i / (float) removeList.size() * 100);
+				if (cur != progress) {
+					removeProgressText.setValue("删除操作已完成" + cur + "%");
+					progress = cur;
+				}
+				FileUtil.deleteFile(removeFile);
+			}
+			e.onNext(removeList.size() + " files are removed");
+		}).subscribe(new Observer<String>() {
+
+			@Override
+			public void onNext(String text) {
+				messageObserver.setValue(text);
+			}
+
+			@Override
+			public void onError(Throwable e) {
+				messageObserver.setValue("备份数据库失败：" + e.getMessage());
+			}
+		});
+	}
+
 }
