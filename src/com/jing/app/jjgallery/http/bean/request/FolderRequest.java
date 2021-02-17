@@ -9,6 +9,18 @@ public class FolderRequest {
      */
     private String type;
 
+    private boolean isCountSize;
+
+    /**
+     * see HttpConstants.FILE_FILTER_XX
+     */
+    private int filterType;
+
+    /**
+     * 访客模式
+     */
+    private boolean isGuest;
+
     public String getFolder() {
         return folder;
     }
@@ -23,5 +35,29 @@ public class FolderRequest {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public boolean isCountSize() {
+        return isCountSize;
+    }
+
+    public void setCountSize(boolean countSize) {
+        isCountSize = countSize;
+    }
+
+    public int getFilterType() {
+        return filterType;
+    }
+
+    public void setFilterType(int filterType) {
+        this.filterType = filterType;
+    }
+
+    public boolean isGuest() {
+        return isGuest;
+    }
+
+    public void setGuest(boolean guest) {
+        isGuest = guest;
     }
 }

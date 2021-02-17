@@ -3,6 +3,11 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
+
+    <listener>
+        <listener-class>com.jing.app.jjgallery.server.TomcatListener</listener-class>
+    </listener>
+
     <servlet>
         <description>Check whether server is connected</description>
         <display-name>Check whether server is connected</display-name>
@@ -75,6 +80,16 @@
     </servlet-mapping>
 
     <servlet>
+        <description>Subtitle service</description>
+        <servlet-name>SubtitleServlet</servlet-name>
+        <servlet-class>com.jing.app.jjgallery.server.SubtitleServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SubtitleServlet</servlet-name>
+        <url-pattern>/subtitle</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <description>UploadStarRatings</description>
         <servlet-name>UploadStarRatingsServlet</servlet-name>
         <servlet-class>com.jing.app.jjgallery.server.UploadStarRatingsServlet</servlet-class>
@@ -122,6 +137,16 @@
     <servlet-mapping>
         <servlet-name>VersionServlet</servlet-name>
         <url-pattern>/version</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <description>BgServlet</description>
+        <servlet-name>BgServlet</servlet-name>
+        <servlet-class>com.jing.app.jjgallery.server.BgServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BgServlet</servlet-name>
+        <url-pattern>/bg</url-pattern>
     </servlet-mapping>
 
 </web-app>

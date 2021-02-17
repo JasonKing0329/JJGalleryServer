@@ -8,4 +8,6 @@ public class HttpConstants {
 
     public static final String FOLDER_TYPE_FOLDER = "folder";
 
+    public static final int FILE_FILTER_VIDEO = 100;
+
 }

@@ -19,6 +19,8 @@ public class PathContextParser extends XmlParser {
 
     private static PathContextParser instance;
 
+    private File xmlFile;
+
     public static PathContextParser getInstance() {
         if (instance == null) {
             instance = new PathContextParser();
@@ -27,6 +29,9 @@ public class PathContextParser extends XmlParser {
     }
 
     private PathContextParser() {
+    }
+
+    public void init() {
         try {
             start();
         } catch (IOException e) {
@@ -38,13 +43,17 @@ public class PathContextParser extends XmlParser {
         }
     }
 
+    public void setXmlFile(File xmlFile) {
+        this.xmlFile = xmlFile;
+    }
+
     public List<PathBean> getPathList() {
         return pathList;
     }
 
     @Override
     protected File getFile() {
-        return new File("C:\\Program Files\\apache-tomcat-7.0.70\\conf\\server.xml");
+        return xmlFile;
     }
 
     @Override

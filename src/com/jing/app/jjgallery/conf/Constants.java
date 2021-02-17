@@ -30,7 +30,7 @@ public class Constants {
     };
 
     public static String[] videoTypes = new String[] {
-            ".mp4", ".wmv", ".mkv", ".avi", ".mov", ".flv", "rmvb"
+            ".mp4", ".wmv", ".mkv", ".avi", ".mov", ".flv", "rmvb", "mpg"
     };
 
     public static String PREF_KEY_UPLOAD_TIME = "pref_upload_time";
