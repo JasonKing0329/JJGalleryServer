@@ -1,21 +1,20 @@
 package com.jing.app.jjgallery.server;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
+import com.google.gson.Gson;
+import com.jing.app.jjgallery.conf.*;
+import com.jing.app.jjgallery.http.bean.data.DownloadItem;
+import com.jing.app.jjgallery.http.bean.request.GdbCheckNewFileBean;
+import com.jing.app.jjgallery.http.bean.response.AppCheckBean;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.google.gson.Gson;
-import com.jing.app.jjgallery.conf.*;
-import com.jing.app.jjgallery.http.bean.response.AppCheckBean;
-import com.jing.app.jjgallery.http.bean.data.DownloadItem;
-import com.jing.app.jjgallery.http.bean.request.GdbCheckNewFileBean;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CheckServlet extends HttpServlet {
 
@@ -54,8 +53,8 @@ public class CheckServlet extends HttpServlet {
 		File file = new File(path);
 		bean.setAppName(file.getName());
 		bean.setAppSize(file.length());
-		
-		if (localVersion.compareTo(version) > 0) {
+
+		if (compareVersion(localVersion, version) > 0) {
 			bean.setAppUpdate(true);
 		}
 		return bean;
@@ -145,4 +144,36 @@ public class CheckServlet extends HttpServlet {
 		return list;
 	}
 
+	/**
+	 * 比较本地版本与目标版本
+	 * @param localVersion 本地版本
+	 * @param targetVersion 目标版本
+	 * @return =0代表相等，>0代表localVersion>targetVersion，<0代表localVersion<targetVersion
+	 */
+	public static int compareVersion(String localVersion, String targetVersion) {
+		try {
+			System.out.println("localVersion " + localVersion + ", targetVersion " + targetVersion);
+			String[] locals = localVersion.split("\\.");
+			String[] targets = targetVersion.split("\\.");
+			int indexLocal = 0, indexTarget = 0;
+			int result = 0;
+			// 以点号为分隔，从左到右依次比较各位版本号
+			while (indexLocal < locals.length || indexTarget < targets.length) {
+				int vLocal = indexLocal < locals.length ? Integer.parseInt(locals[indexLocal]) : 0;
+				int vTarget = indexTarget < targets.length ? Integer.parseInt(targets[indexTarget]) : 0;
+				result = vLocal - vTarget;
+				// 已经比较出大小，不用再比较
+				if (result != 0) {
+					break;
+				}
+				// 目前相等，继续比较
+				indexLocal ++;
+				indexTarget ++;
+			}
+			return result > 0 ? 1:(result < 0 ? -1:0);
+		} catch (Exception e) {
+
+		}
+		return 0;
+	}
 }
